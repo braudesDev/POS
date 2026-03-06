@@ -1,0 +1,153 @@
+<div class="container">
+  <div class="header">
+    <h1>{{ editMode ? "Editar" : "Nuevo" }} Producto</h1>
+    <button class="btn-secondary" routerLink="/productos">← Volver</button>
+  </div>
+
+  <form [formGroup]="productoForm" (ngSubmit)="onSubmit()" class="product-form">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading">Cargando...</div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <!-- Form -->
+    <div *ngIf="!loading" class="form-grid">
+      <!-- Código de Barras -->
+      <div class="form-group">
+        <label for="codigoBarras">Código de Barras *</label>
+        <input
+          type="text"
+          id="codigoBarras"
+          formControlName="codigoBarras"
+          [class.invalid]="isFieldInvalid('codigoBarras')"
+          placeholder="Ej: 750123456789"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('codigoBarras')">
+          El código de barras es requerido
+        </div>
+      </div>
+
+      <!-- Nombre -->
+      <div class="form-group">
+        <label for="nombre">Nombre del Producto *</label>
+        <input
+          type="text"
+          id="nombre"
+          formControlName="nombre"
+          [class.invalid]="isFieldInvalid('nombre')"
+          placeholder="Ej: Peluche de Oso"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('nombre')">
+          El nombre es requerido
+        </div>
+      </div>
+
+      <!-- Categoría -->
+      <div class="form-group">
+        <label for="categoria">Categoría *</label>
+        <select
+          id="categoria"
+          formControlName="categoria"
+          [class.invalid]="isFieldInvalid('categoria')"
+        >
+          <option value="">Selecciona una categoría</option>
+          <option value="cosmeticos">Cosméticos</option>
+          <option value="peluches">Peluches</option>
+          <option value="bolsas">Bolsas</option>
+          <option value="carteras">Carteras</option>
+          <option value="otros">Otros</option>
+        </select>
+        <div class="error-message" *ngIf="isFieldInvalid('categoria')">
+          La categoría es requerida
+        </div>
+      </div>
+
+      <!-- Precio -->
+      <div class="form-group">
+        <label for="precio">Precio *</label>
+        <input
+          type="number"
+          id="precio"
+          formControlName="precio"
+          [class.invalid]="isFieldInvalid('precio')"
+          step="0.01"
+          min="0"
+          placeholder="0.00"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('precio')">
+          El precio debe ser mayor a 0
+        </div>
+      </div>
+
+      <!-- Stock -->
+      <div class="form-group">
+        <label for="stock">Stock *</label>
+        <input
+          type="number"
+          id="stock"
+          formControlName="stock"
+          [class.invalid]="isFieldInvalid('stock')"
+          min="0"
+          step="1"
+          placeholder="0"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('stock')">
+          El stock debe ser 0 o más
+        </div>
+      </div>
+
+      <!-- Descripción (opcional) -->
+      <div class="form-group full-width">
+        <label for="descripcion">Descripción (opcional)</label>
+        <textarea
+          id="descripcion"
+          formControlName="descripcion"
+          rows="3"
+          placeholder="Descripción del producto..."
+        ></textarea>
+      </div>
+
+      <!-- Imagen (opcional) -->
+      <div class="form-group full-width">
+        <label for="imagen">Imagen del Producto</label>
+        <input
+          type="file"
+          id="imagen"
+          (change)="onImagenSeleccionada($event)"
+          accept="image/*"
+        />
+        <div
+          class="image-preview"
+          *ngIf="imagenPreview || productoActual?.imagenUrl"
+        >
+          <img
+            [src]="imagenPreview || productoActual?.imagenUrl"
+            alt="Vista previa"
+            class="preview"
+          />
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" routerLink="/productos">
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="productoForm.invalid || submitting"
+        >
+          {{
+            submitting
+              ? "Guardando..."
+              : editMode
+                ? "Actualizar"
+                : "Crear Producto"
+          }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

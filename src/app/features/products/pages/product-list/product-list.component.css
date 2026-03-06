@@ -1,0 +1,156 @@
+.container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  margin: 0;
+  color: #333;
+}
+
+.btn-primary {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: #45a049;
+}
+
+.table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.products-table th {
+  background: #f5f5f5;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+}
+
+.products-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.products-table tr:hover {
+  background: #f9f9f9;
+}
+
+.product-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.no-image {
+  width: 50px;
+  height: 50px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  background: #e0e0e0;
+}
+
+.categoria-cosmeticos {
+  background: #ffcdd2;
+  color: #c62828;
+}
+.categoria-peluches {
+  background: #bbdefb;
+  color: #1565c0;
+}
+.categoria-bolsas {
+  background: #d1c4e9;
+  color: #512da8;
+}
+.categoria-carteras {
+  background: #ffe0b2;
+  color: #e65100;
+}
+.categoria-otros {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+
+.stock {
+  font-weight: 600;
+}
+
+.stock-bajo {
+  color: #ff9800;
+}
+
+.stock-agotado {
+  color: #f44336;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-edit,
+.btn-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.btn-edit:hover {
+  background: #e3f2fd;
+}
+
+.btn-delete:hover {
+  background: #ffebee;
+}
+
+.loading,
+.error,
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.error {
+  color: #f44336;
+  background: #ffebee;
+  border-radius: 4px;
+}

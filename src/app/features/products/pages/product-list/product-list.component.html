@@ -1,0 +1,85 @@
+<div class="container">
+  <div class="header">
+    <h1>Catálogo de Productos</h1>
+    <button class="btn-primary" routerLink="/productos/nuevo">
+      + Nuevo Producto
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">Cargando productos...</div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <!-- Products Table -->
+  <div *ngIf="!loading && !error" class="table-container">
+    <table class="products-table">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let producto of productos">
+          <td>
+            <img
+              *ngIf="producto.imagenUrl; else noImage"
+              [src]="producto.imagenUrl"
+              alt="{{ producto.nombre }}"
+              class="product-image"
+            />
+            <ng-template #noImage>
+              <div class="no-image">📷</div>
+            </ng-template>
+          </td>
+          <td>{{ producto.codigoBarras }}</td>
+          <td>{{ producto.nombre }}</td>
+          <td>
+            <span class="badge" [ngClass]="'categoria-' + producto.categoria">
+              {{ producto.categoria }}
+            </span>
+          </td>
+          <td>{{ producto.precio | currency }}</td>
+          <td>
+            <span
+              class="stock"
+              [ngClass]="{
+                'stock-bajo': producto.stock < 5,
+                'stock-agotado': producto.stock === 0,
+              }"
+            >
+              {{ producto.stock }}
+            </span>
+          </td>
+          <td class="actions">
+            <button
+              class="btn-edit"
+              [routerLink]="['/productos/editar', producto.id]"
+            >
+              ✏️
+            </button>
+            <button class="btn-delete" (click)="eliminarProducto(producto)">
+              🗑️
+            </button>
+          </td>
+        </tr>
+
+        <!-- Empty State -->
+        <tr *ngIf="productos.length === 0">
+          <td colspan="7" class="empty-state">
+            No hay productos. ¡Crea tu primer producto!
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
