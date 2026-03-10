@@ -27,9 +27,41 @@ export const routes: Routes = [
       },
     ],
   },
+  // Ruta para el POS
+  {
+    path: 'pos',
+    loadComponent: () =>
+      import('./features/sales/pages/pos/pos.component').then(
+        (m) => m.PosComponent,
+      ),
+  },
+  {
+    path: 'reportes',
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/reports/pages/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent,
+          ),
+      },
+      {
+        path: 'dashboard',
+        redirectTo: '',
+      },
+      {
+        path: 'historial',
+        loadComponent: () =>
+          import('./features/reports/pages/sales-history/sales-history.component').then(
+            (m) => m.SalesHistoryComponent,
+          ),
+      },
+    ],
+  },
+  // Secambia la direccion al POS
   {
     path: '',
-    redirectTo: '/productos',
+    redirectTo: '/pos',
     pathMatch: 'full',
   },
 ];

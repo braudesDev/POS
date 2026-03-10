@@ -25,22 +25,27 @@ import {
   CreateProductoDTO,
   UpdateProductoDTO,
 } from '../models/producto.model';
+import { CloudinaryService } from '../../../core/cloudinary/cloudinary.service';
 
 @Injectable({
-  providedIn: 'root', // Esto lo hace disponible en toda la app
+  providedIn: 'root',
 })
 export class ProductsService {
   private firestore = inject(Firestore);
   private storage = inject(Storage);
 
   private productosRef = collection(this.firestore, 'productos');
+  private cloudinary = inject(CloudinaryService);
 
   /**
    * Obtener todos los productos
    */
   getProductos(): Observable<Producto[]> {
-    const q = query(this.productosRef, orderBy('nombre'));
-    return collectionData(q, { idField: 'id' }) as Observable<Producto[]>;
+    const productosQuery = query(this.productosRef, orderBy('nombre'));
+    // Versión SIMPLE sin runInInjectionContext
+    return collectionData(productosQuery, { idField: 'id' }) as Observable<
+      Producto[]
+    >;
   }
 
   /**
@@ -57,9 +62,14 @@ export class ProductsService {
    * Buscar producto por código de barras
    */
   getProductoByCodigo(codigo: string): Observable<Producto | undefined> {
-    const q = query(this.productosRef, where('codigoBarras', '==', codigo));
+    const productosQuery = query(
+      this.productosRef,
+      where('codigoBarras', '==', codigo),
+    );
     return (
-      collectionData(q, { idField: 'id' }) as Observable<Producto[]>
+      collectionData(productosQuery, { idField: 'id' }) as Observable<
+        Producto[]
+      >
     ).pipe(
       map((productos) => (productos.length > 0 ? productos[0] : undefined)),
     );
@@ -69,7 +79,6 @@ export class ProductsService {
    * Crear un nuevo producto
    */
   crearProducto(producto: CreateProductoDTO): Observable<string> {
-    // Agregar fechas
     const productoConFechas = {
       ...producto,
       createdAt: Timestamp.now(),
@@ -102,24 +111,22 @@ export class ProductsService {
   }
 
   /**
-   * Subir imagen para un producto
+   * Subir imagen a Cloudinary
+   * @param file Archivo de imagen
+   * @returns Observable con la URL de la imagen en Cloudinary
    */
-  subirImagen(productoId: string, file: File): Observable<string> {
-    // Crear referencia en Storage
-    const filePath = `productos/${productoId}/${Date.now()}_${file.name}`;
-    const fileRef = ref(this.storage, filePath);
-
-    // Subir archivo y obtener URL
-    return from(uploadBytes(fileRef, file)).pipe(
-      switchMap(() => from(getDownloadURL(fileRef))),
-    );
+  subirImagen(file: File): Observable<string> {
+    return this.cloudinary.subirImagen(file);
   }
 
   /**
-   * Actualizar solo la imagen de un producto
+   * Subir imagen a Cloudinary y actualizar el producto en Firestore
+   * @param productoId ID del producto
+   * @param file Archivo de imagen
+   * @returns Observable con la URL de la imagen
    */
   actualizarImagen(productoId: string, file: File): Observable<string> {
-    return this.subirImagen(productoId, file).pipe(
+    return this.subirImagen(file).pipe(
       switchMap((url) => {
         const docRef = doc(this.firestore, `productos/${productoId}`);
         return from(

@@ -1,0 +1,126 @@
+<div class="dashboard-container">
+  <div class="header">
+    <h1>Dashboard de Ventas</h1>
+    <div class="header-actions">
+      <button class="btn-refresh" (click)="cargarDatos()" [disabled]="cargando">
+        ↻ Actualizar
+      </button>
+      <button class="btn-history" routerLink="/reportes/historial">
+        📜 Ver Historial
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="cargando" class="loading">Cargando datos...</div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!cargando && !error" class="dashboard-content">
+    <!-- Tarjetas de resumen -->
+    <div class="cards-grid">
+      <div class="card total-ventas">
+        <div class="card-icon">💰</div>
+        <div class="card-info">
+          <span class="card-label">Ventas hoy</span>
+          <span class="card-value">{{ resumen?.totalVentas || 0 }}</span>
+        </div>
+      </div>
+
+      <div class="card ingresos">
+        <div class="card-icon">💵</div>
+        <div class="card-info">
+          <span class="card-label">Ingresos hoy</span>
+          <span class="card-value">${{ resumen?.totalIngresos || 0 }}</span>
+        </div>
+      </div>
+
+      <div class="card productos">
+        <div class="card-icon">📦</div>
+        <div class="card-info">
+          <span class="card-label">Productos vendidos</span>
+          <span class="card-value">{{ resumen?.productosVendidos || 0 }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfico de métodos de pago (simulado con barras) -->
+    <div class="payment-methods">
+      <h3>Ventas por método de pago</h3>
+      <div class="payment-bars">
+        <div class="payment-bar-item">
+          <span class="payment-label">Efectivo</span>
+          <div class="bar-container">
+            <div
+              class="bar efectivo"
+              [style.width.%]="porcentajeEfectivo"
+            ></div>
+          </div>
+          <span class="payment-value">${{ resumen?.ventasEfectivo || 0 }}</span>
+        </div>
+        <div class="payment-bar-item">
+          <span class="payment-label">Tarjeta</span>
+          <div class="bar-container">
+            <div class="bar tarjeta" [style.width.%]="porcentajeTarjeta"></div>
+          </div>
+          <span class="payment-value">${{ resumen?.ventasTarjeta || 0 }}</span>
+        </div>
+        <div class="payment-bar-item">
+          <span class="payment-label">Transferencia</span>
+          <div class="bar-container">
+            <div
+              class="bar transferencia"
+              [style.width.%]="porcentajeTransferencia"
+            ></div>
+          </div>
+          <span class="payment-value"
+            >${{ resumen?.ventasTransferencia || 0 }}</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Productos más vendidos -->
+    <div class="top-products">
+      <h3>Productos más vendidos</h3>
+      <div class="products-list">
+        <div
+          *ngFor="let producto of productosTop; let i = index"
+          class="product-item"
+        >
+          <span class="product-rank">#{{ i + 1 }}</span>
+          <span class="product-name">{{ producto.nombre }}</span>
+          <span class="product-quantity">{{ producto.cantidad }} uds</span>
+          <span class="product-total">${{ producto.total }}</span>
+        </div>
+        <div *ngIf="productosTop.length === 0" class="no-data">
+          No hay ventas suficientes
+        </div>
+      </div>
+    </div>
+
+    <!-- Últimas ventas -->
+    <div class="recent-sales">
+      <h3>Últimas ventas</h3>
+      <div class="sales-list">
+        <div *ngFor="let venta of ultimasVentas" class="sale-item">
+          <span class="sale-time">{{
+            venta.fecha.toDate() | date: "HH:mm"
+          }}</span>
+          <span class="sale-items">{{ venta.items.length }} productos</span>
+          <span class="sale-total">${{ venta.total }}</span>
+          <span class="sale-method" [ngClass]="'metodo-' + venta.metodoPago">
+            {{ venta.metodoPago }}
+          </span>
+        </div>
+        <div *ngIf="ultimasVentas.length === 0" class="no-data">
+          No hay ventas hoy
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

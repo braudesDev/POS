@@ -1,0 +1,104 @@
+<mat-card class="scanner-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>qr_code_scanner</mat-icon>
+      Escanear Producto
+    </mat-card-title>
+    <mat-chip-listbox
+      class="scanner-mode-selector"
+      [(ngModel)]="modoManual"
+      (change)="cambiarModo($event.value)"
+    >
+      <mat-chip-option
+        [value]="false"
+        [selected]="!modoManual"
+        [color]="'primary'"
+      >
+        <mat-icon>camera_alt</mat-icon>
+        Automático
+      </mat-chip-option>
+      <mat-chip-option
+        [value]="true"
+        [selected]="modoManual"
+        [color]="'accent'"
+      >
+        <mat-icon>keyboard</mat-icon>
+        Manual
+      </mat-chip-option>
+    </mat-chip-listbox>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- Modo Manual -->
+    <div *ngIf="modoManual" class="manual-mode">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Código de barras</mat-label>
+        <input
+          matInput
+          [(ngModel)]="codigoManual"
+          (keyup.enter)="buscarCodigo()"
+          placeholder="Ingresa el código manualmente"
+        />
+        <button
+          matSuffix
+          mat-icon-button
+          (click)="buscarCodigo()"
+          [disabled]="!codigoManual"
+        >
+          <mat-icon>search</mat-icon>
+        </button>
+        <mat-hint>Ej: 750123456789</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <!-- Modo Escáner -->
+    <div *ngIf="!modoManual" class="scanner-mode">
+      <div
+        class="scanner-area"
+        [class.active]="scannerActivo"
+        (click)="enfocarScanner()"
+      >
+        <div class="scanner-icon">
+          <mat-icon>qr_code_scanner</mat-icon>
+        </div>
+
+        <div class="scanner-status">
+          <p class="status-text">
+            {{ scannerActivo ? "Escáner activo" : "Haz clic para activar" }}
+          </p>
+          <p class="status-hint" *ngIf="scannerActivo">
+            Escanea el código de barras del producto
+          </p>
+          <p class="status-hint" *ngIf="!scannerActivo">
+            El escáner se activará automáticamente
+          </p>
+        </div>
+
+        <mat-progress-bar
+          *ngIf="scannerActivo"
+          mode="indeterminate"
+          class="scanner-progress"
+        >
+        </mat-progress-bar>
+      </div>
+
+      <input
+        #scannerInput
+        class="hidden-input"
+        (keydown)="onKeyDown($event)"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+      />
+    </div>
+
+    <!-- Mensaje de estado -->
+    <div
+      *ngIf="mensaje"
+      class="status-message"
+      [ngClass]="{ success: !mensajeError, error: mensajeError }"
+    >
+      <mat-icon>{{ mensajeError ? "error" : "check_circle" }}</mat-icon>
+      <span>{{ mensaje }}</span>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,21 @@
+<div class="pos-container">
+  <header class="pos-header">
+    <h1>Punto de Venta</h1>
+    <div class="header-actions">
+      <button class="btn-reports" routerLink="/reportes">📊 Reportes</button>
+      <button class="btn-products" routerLink="/productos">📦 Catálogo</button>
+    </div>
+  </header>
+
+  <div class="pos-grid">
+    <div class="left-panel">
+      <app-scanner (productoAgregado)="onProductoAgregado()"></app-scanner>
+      <app-cart></app-cart>
+    </div>
+
+    <div class="right-panel">
+      <app-checkout></app-checkout>
+      <!-- ← AHORA USA EL COMPONENTE REAL -->
+    </div>
+  </div>
+</div>

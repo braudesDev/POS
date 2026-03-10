@@ -1,0 +1,115 @@
+<div class="checkout-container">
+  <h3>Finalizar Venta</h3>
+
+  <!-- Resumen del carrito -->
+  <div class="cart-summary" *ngIf="items.length > 0">
+    <div class="summary-row" *ngFor="let item of items">
+      <span>{{ item.cantidad }} x {{ item.producto.nombre }}</span>
+      <span>${{ item.subtotal }}</span>
+    </div>
+
+    <div class="summary-total">
+      <strong>Total:</strong>
+      <strong>${{ total }}</strong>
+    </div>
+  </div>
+
+  <!-- Formulario de checkout -->
+  <form
+    *ngIf="items.length > 0"
+    #checkoutForm="ngForm"
+    (ngSubmit)="procesarVenta()"
+    class="checkout-form"
+  >
+    <!-- Método de pago -->
+    <div class="form-group">
+      <label>Método de pago *</label>
+      <div class="payment-methods">
+        <button
+          type="button"
+          class="payment-method"
+          [class.selected]="metodoPago === 'efectivo'"
+          (click)="metodoPago = 'efectivo'"
+        >
+          💵 Efectivo
+        </button>
+        <button
+          type="button"
+          class="payment-method"
+          [class.selected]="metodoPago === 'tarjeta'"
+          (click)="metodoPago = 'tarjeta'"
+        >
+          💳 Tarjeta
+        </button>
+        <button
+          type="button"
+          class="payment-method"
+          [class.selected]="metodoPago === 'transferencia'"
+          (click)="metodoPago = 'transferencia'"
+        >
+          📱 Transferencia
+        </button>
+      </div>
+    </div>
+
+    <!-- Si es efectivo, mostrar cambio -->
+    <div *ngIf="metodoPago === 'efectivo'" class="form-group">
+      <label for="montoPago">Monto con el que paga *</label>
+      <input
+        type="number"
+        id="montoPago"
+        [(ngModel)]="montoPago"
+        name="montoPago"
+        class="form-input"
+        [class.invalid]="montoPago < total"
+        min="0"
+        step="0.01"
+        required
+      />
+      <div *ngIf="montoPago >= total" class="cambio">
+        Cambio: ${{ (montoPago - total).toFixed(2) }}
+      </div>
+      <div *ngIf="montoPago < total && montoPago > 0" class="error-message">
+        El monto debe ser mayor o igual al total
+      </div>
+    </div>
+
+    <!-- Nota opcional -->
+    <div class="form-group">
+      <label for="nota">Nota (opcional)</label>
+      <textarea
+        id="nota"
+        [(ngModel)]="nota"
+        name="nota"
+        class="form-input"
+        rows="2"
+        placeholder="Observaciones de la venta..."
+      ></textarea>
+    </div>
+
+    <!-- Botones -->
+    <div class="form-actions">
+      <button type="button" class="btn-cancelar" (click)="cancelar()">
+        Cancelar
+      </button>
+      <button type="submit" class="btn-procesar" [disabled]="!puedeProcesar()">
+        {{ procesando ? "Procesando..." : "Confirmar Venta" }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Estado vacío -->
+  <div *ngIf="items.length === 0" class="empty-checkout">
+    <p>🛒 Agrega productos al carrito para finalizar la venta</p>
+  </div>
+
+  <!-- Mensaje de éxito/error -->
+  <div
+    *ngIf="mensaje"
+    class="mensaje"
+    [class.success]="mensajeExito"
+    [class.error]="!mensajeExito"
+  >
+    {{ mensaje }}
+  </div>
+</div>

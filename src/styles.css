@@ -1,1 +1,30 @@
+/* Importa el tema de Angular Material */
+@import "./custom-theme.scss";
+
 /* You can add global styles to this file, and also import other style files */
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Estilos para Snackbars */
+.success-snackbar {
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+  border-left: 4px solid var(--mat-sys-primary);
+}
+
+.error-snackbar {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+  border-left: 4px solid var(--mat-sys-error);
+}
+
+.success-snackbar .mat-simple-snackbar-action,
+.error-snackbar .mat-simple-snackbar-action {
+  color: currentColor;
+}

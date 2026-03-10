@@ -1,0 +1,147 @@
+import {
+  Component,
+  Output,
+  EventEmitter,
+  inject,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { CarritoService } from '../../services/carrito.service';
+import { MaterialModule } from '../../../../shared/material/material.module';
+
+@Component({
+  selector: 'app-scanner',
+  standalone: true,
+  imports: [CommonModule, FormsModule, MaterialModule],
+  templateUrl: './scanner.component.html',
+  styleUrls: ['./scanner.component.css'],
+})
+export class ScannerComponent {
+  @Output() productoAgregado = new EventEmitter<any>();
+  @ViewChild('scannerInput') scannerInput!: ElementRef;
+
+  private carritoService = inject(CarritoService);
+
+  modoManual = false;
+  codigoManual = '';
+  mensaje = '';
+  mensajeError = false;
+  scannerActivo = false;
+  private codigoBuffer = '';
+  private timeoutId: any;
+  private readonly TIMEOUT_MS = 150; // 150ms de inactividad
+
+  enfocarScanner() {
+    this.scannerActivo = true;
+    this.mensaje = '✅ Escáner activo - Escanea ahora';
+    setTimeout(() => {
+      this.scannerInput.nativeElement.focus();
+      console.log(
+        'Input enfocado:',
+        document.activeElement === this.scannerInput.nativeElement,
+      );
+    }, 100);
+  }
+
+  onFocus() {
+    this.scannerActivo = true;
+    this.mensaje = '✅ Escáner activo - Escanea ahora';
+  }
+
+  onBlur() {
+    this.scannerActivo = false;
+    this.mensaje = '';
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    // Ignorar teclas de control
+    if (
+      event.key === 'Shift' ||
+      event.key === 'Control' ||
+      event.key === 'Alt' ||
+      event.key === 'Meta'
+    ) {
+      return;
+    }
+
+    // Prevenir comportamiento por defecto (evitar que escriba en otros lados)
+    event.preventDefault();
+
+    // Limpiar timeout anterior
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+
+    // Si es Enter, procesar inmediatamente
+    if (event.key === 'Enter') {
+      if (this.codigoBuffer.length > 0) {
+        console.log('Enter detectado, procesando:', this.codigoBuffer);
+        this.procesarCodigo(this.codigoBuffer);
+        this.codigoBuffer = '';
+      }
+      return;
+    }
+
+    // Si es un carácter imprimible, acumular
+    if (event.key.length === 1) {
+      // Solo permitir dígitos (opcional, depende de tu caso)
+      if (/[0-9]/.test(event.key)) {
+        this.codigoBuffer += event.key;
+        console.log('Buffer actualizado:', this.codigoBuffer);
+
+        // Establecer timeout para procesar después de inactividad
+        this.timeoutId = setTimeout(() => {
+          if (this.codigoBuffer.length > 0) {
+            console.log(
+              'Timeout por inactividad, procesando:',
+              this.codigoBuffer,
+            );
+            this.procesarCodigo(this.codigoBuffer);
+            this.codigoBuffer = '';
+          }
+        }, this.TIMEOUT_MS);
+      }
+    }
+  }
+
+  // Agrega este método a la clase ScannerComponent
+  cambiarModo(modo: boolean) {
+    this.modoManual = modo;
+    if (!modo) {
+      // Si cambia a modo automático, enfocar el escáner
+      setTimeout(() => this.enfocarScanner(), 100);
+    }
+  }
+
+  buscarCodigo() {
+    if (this.codigoManual) {
+      this.procesarCodigo(this.codigoManual);
+      this.codigoManual = '';
+    }
+  }
+
+  private procesarCodigo(codigo: string) {
+    console.log('Procesando código:', codigo);
+    this.mensaje = 'Buscando producto...';
+    this.mensajeError = false;
+
+    this.carritoService.agregarPorCodigo(codigo).subscribe({
+      next: (encontrado) => {
+        if (encontrado) {
+          this.mensaje = '✅ Producto agregado al carrito';
+          this.productoAgregado.emit();
+        } else {
+          this.mensaje = '❌ Producto no encontrado';
+          this.mensajeError = true;
+        }
+      },
+      error: (err) => {
+        this.mensaje = '❌ Error al buscar producto';
+        this.mensajeError = true;
+        console.error('Error:', err);
+      },
+    });
+  }
+}

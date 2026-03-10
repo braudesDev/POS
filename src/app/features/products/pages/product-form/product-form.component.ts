@@ -9,11 +9,19 @@ import {
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProductsService } from '../../services/products.service';
 import { Producto } from '../../models/producto.model';
+import { MaterialModule } from '../../../../shared/material/material.module';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    MaterialModule,
+    MatProgressSpinner,
+  ],
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css'],
 })
@@ -131,17 +139,20 @@ export class ProductFormComponent implements OnInit {
       // Crear nuevo producto
       this.productsService.crearProducto(productoData).subscribe({
         next: (id) => {
+          console.log('✅ Producto creado con ID:', id);
           if (this.imagenFile) {
-            // Si hay imagen, subirla
             this.subirImagenYRedirigir(id);
           } else {
-            this.router.navigate(['/productos']);
+            this.submitting = false; // <-- AÑADE ESTA LÍNEA
+            this.router.navigate(['/productos']).then(() => {
+              console.log('✅ Redirigido a lista de productos');
+            });
           }
         },
         error: (err) => {
-          console.error('Error creando producto:', err);
+          console.error('❌ Error creando producto:', err);
           this.error = 'Error al crear el producto';
-          this.submitting = false;
+          this.submitting = false; // <-- YA ESTÁ, PERO VERIFICA
         },
       });
     }

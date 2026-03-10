@@ -1,85 +1,132 @@
 <div class="container">
   <div class="header">
     <h1>Catálogo de Productos</h1>
-    <button class="btn-primary" routerLink="/productos/nuevo">
-      + Nuevo Producto
+    <button mat-raised-button color="primary" routerLink="/productos/nuevo">
+      <mat-icon>add</mat-icon>
+      Agregar Nuevo Producto
     </button>
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="loading">Cargando productos...</div>
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando productos...</p>
+  </div>
 
   <!-- Error State -->
-  <div *ngIf="error" class="error">
-    {{ error }}
+  <div *ngIf="error" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <span>{{ error }}</span>
+    <button mat-button color="primary" (click)="cargarProductos()">
+      Reintentar
+    </button>
   </div>
 
   <!-- Products Table -->
   <div *ngIf="!loading && !error" class="table-container">
-    <table class="products-table">
-      <thead>
-        <tr>
-          <th>Imagen</th>
-          <th>Código</th>
-          <th>Nombre</th>
-          <th>Categoría</th>
-          <th>Precio</th>
-          <th>Stock</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let producto of productos">
-          <td>
-            <img
-              *ngIf="producto.imagenUrl; else noImage"
-              [src]="producto.imagenUrl"
-              alt="{{ producto.nombre }}"
-              class="product-image"
-            />
-            <ng-template #noImage>
-              <div class="no-image">📷</div>
-            </ng-template>
-          </td>
-          <td>{{ producto.codigoBarras }}</td>
-          <td>{{ producto.nombre }}</td>
-          <td>
-            <span class="badge" [ngClass]="'categoria-' + producto.categoria">
-              {{ producto.categoria }}
-            </span>
-          </td>
-          <td>{{ producto.precio | currency }}</td>
-          <td>
-            <span
-              class="stock"
-              [ngClass]="{
-                'stock-bajo': producto.stock < 5,
-                'stock-agotado': producto.stock === 0,
-              }"
-            >
-              {{ producto.stock }}
-            </span>
-          </td>
-          <td class="actions">
-            <button
-              class="btn-edit"
-              [routerLink]="['/productos/editar', producto.id]"
-            >
-              ✏️
-            </button>
-            <button class="btn-delete" (click)="eliminarProducto(producto)">
-              🗑️
-            </button>
-          </td>
-        </tr>
+    <table mat-table [dataSource]="productos" class="mat-elevation-z8">
+      <!-- Imagen Column -->
+      <ng-container matColumnDef="imagen">
+        <th mat-header-cell *matHeaderCellDef>Imagen</th>
+        <td mat-cell *matCellDef="let producto">
+          <img
+            *ngIf="producto.imagenUrl"
+            [src]="producto.imagenUrl"
+            class="product-image"
+          />
+          <mat-icon *ngIf="!producto.imagenUrl" class="no-image-icon"
+            >image_not_supported</mat-icon
+          >
+        </td>
+      </ng-container>
 
-        <!-- Empty State -->
-        <tr *ngIf="productos.length === 0">
-          <td colspan="7" class="empty-state">
-            No hay productos. ¡Crea tu primer producto!
-          </td>
-        </tr>
-      </tbody>
+      <!-- Código Column -->
+      <ng-container matColumnDef="codigo">
+        <th mat-header-cell *matHeaderCellDef>Código</th>
+        <td mat-cell *matCellDef="let producto">{{ producto.codigoBarras }}</td>
+      </ng-container>
+
+      <!-- Nombre Column -->
+      <ng-container matColumnDef="nombre">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let producto">{{ producto.nombre }}</td>
+      </ng-container>
+
+      <!-- Categoría Column -->
+      <ng-container matColumnDef="categoria">
+        <th mat-header-cell *matHeaderCellDef>Categoría</th>
+        <td mat-cell *matCellDef="let producto">
+          <mat-chip-set>
+            <mat-chip [ngClass]="'categoria-' + producto.categoria">
+              {{ producto.categoria }}
+            </mat-chip>
+          </mat-chip-set>
+        </td>
+      </ng-container>
+
+      <!-- Precio Column -->
+      <ng-container matColumnDef="precio">
+        <th mat-header-cell *matHeaderCellDef>Precio</th>
+        <td mat-cell *matCellDef="let producto">
+          {{ producto.precio | currency }}
+        </td>
+      </ng-container>
+
+      <!-- Stock Column -->
+      <ng-container matColumnDef="stock">
+        <th mat-header-cell *matHeaderCellDef>Stock</th>
+        <td mat-cell *matCellDef="let producto">
+          <span
+            [class.stock-bajo]="producto.stock < 5"
+            [class.stock-agotado]="producto.stock === 0"
+          >
+            {{ producto.stock }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Acciones Column -->
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let producto">
+          <button
+            mat-icon-button
+            color="primary"
+            [routerLink]="['/productos/editar', producto.id]"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="eliminarProducto(producto)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      <!-- Empty State -->
+      <tr class="mat-row" *ngIf="productos.length === 0">
+        <td
+          class="mat-cell empty-state"
+          [attr.colspan]="displayedColumns.length"
+        >
+          <mat-icon>inventory</mat-icon>
+          <p>No hay productos. ¡Crea tu primer producto!</p>
+        </td>
+      </tr>
     </table>
+
+    <!-- Paginator -->
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25]"
+      showFirstLastButtons
+      aria-label="Seleccionar página"
+    >
+    </mat-paginator>
   </div>
 </div>

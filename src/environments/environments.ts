@@ -9,4 +9,8 @@ export const environment = {
     appId: '1:292559931581:web:9907d1b32cfdfcb2a44fd4',
     measurementId: 'G-NMWMJF4Q4S',
   },
+  cloudinary: {
+    cloudName: 'doqmax1ic',
+    uploadPreset: 'pdv_productos',
+  },
 };

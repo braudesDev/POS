@@ -1,153 +1,194 @@
 <div class="container">
   <div class="header">
     <h1>{{ editMode ? "Editar" : "Nuevo" }} Producto</h1>
-    <button class="btn-secondary" routerLink="/productos">← Volver</button>
+    <button mat-stroked-button routerLink="/productos">
+      <mat-icon>arrow_back</mat-icon>
+      Volver
+    </button>
   </div>
 
-  <form [formGroup]="productoForm" (ngSubmit)="onSubmit()" class="product-form">
-    <!-- Loading State -->
-    <div *ngIf="loading" class="loading">Cargando...</div>
-
-    <!-- Error State -->
-    <div *ngIf="error" class="error">{{ error }}</div>
-
-    <!-- Form -->
-    <div *ngIf="!loading" class="form-grid">
-      <!-- Código de Barras -->
-      <div class="form-group">
-        <label for="codigoBarras">Código de Barras *</label>
-        <input
-          type="text"
-          id="codigoBarras"
-          formControlName="codigoBarras"
-          [class.invalid]="isFieldInvalid('codigoBarras')"
-          placeholder="Ej: 750123456789"
-        />
-        <div class="error-message" *ngIf="isFieldInvalid('codigoBarras')">
-          El código de barras es requerido
-        </div>
+  <mat-card>
+    <mat-card-content>
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-spinner">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Cargando producto...</p>
       </div>
 
-      <!-- Nombre -->
-      <div class="form-group">
-        <label for="nombre">Nombre del Producto *</label>
-        <input
-          type="text"
-          id="nombre"
-          formControlName="nombre"
-          [class.invalid]="isFieldInvalid('nombre')"
-          placeholder="Ej: Peluche de Oso"
-        />
-        <div class="error-message" *ngIf="isFieldInvalid('nombre')">
-          El nombre es requerido
-        </div>
-      </div>
-
-      <!-- Categoría -->
-      <div class="form-group">
-        <label for="categoria">Categoría *</label>
-        <select
-          id="categoria"
-          formControlName="categoria"
-          [class.invalid]="isFieldInvalid('categoria')"
-        >
-          <option value="">Selecciona una categoría</option>
-          <option value="cosmeticos">Cosméticos</option>
-          <option value="peluches">Peluches</option>
-          <option value="bolsas">Bolsas</option>
-          <option value="carteras">Carteras</option>
-          <option value="otros">Otros</option>
-        </select>
-        <div class="error-message" *ngIf="isFieldInvalid('categoria')">
-          La categoría es requerida
-        </div>
-      </div>
-
-      <!-- Precio -->
-      <div class="form-group">
-        <label for="precio">Precio *</label>
-        <input
-          type="number"
-          id="precio"
-          formControlName="precio"
-          [class.invalid]="isFieldInvalid('precio')"
-          step="0.01"
-          min="0"
-          placeholder="0.00"
-        />
-        <div class="error-message" *ngIf="isFieldInvalid('precio')">
-          El precio debe ser mayor a 0
-        </div>
-      </div>
-
-      <!-- Stock -->
-      <div class="form-group">
-        <label for="stock">Stock *</label>
-        <input
-          type="number"
-          id="stock"
-          formControlName="stock"
-          [class.invalid]="isFieldInvalid('stock')"
-          min="0"
-          step="1"
-          placeholder="0"
-        />
-        <div class="error-message" *ngIf="isFieldInvalid('stock')">
-          El stock debe ser 0 o más
-        </div>
-      </div>
-
-      <!-- Descripción (opcional) -->
-      <div class="form-group full-width">
-        <label for="descripcion">Descripción (opcional)</label>
-        <textarea
-          id="descripcion"
-          formControlName="descripcion"
-          rows="3"
-          placeholder="Descripción del producto..."
-        ></textarea>
-      </div>
-
-      <!-- Imagen (opcional) -->
-      <div class="form-group full-width">
-        <label for="imagen">Imagen del Producto</label>
-        <input
-          type="file"
-          id="imagen"
-          (change)="onImagenSeleccionada($event)"
-          accept="image/*"
-        />
-        <div
-          class="image-preview"
-          *ngIf="imagenPreview || productoActual?.imagenUrl"
-        >
-          <img
-            [src]="imagenPreview || productoActual?.imagenUrl"
-            alt="Vista previa"
-            class="preview"
-          />
-        </div>
-      </div>
-
-      <!-- Botones -->
-      <div class="form-actions">
-        <button type="button" class="btn-secondary" routerLink="/productos">
-          Cancelar
-        </button>
+      <!-- Error State -->
+      <div *ngIf="error" class="error-container">
+        <mat-icon color="warn">error</mat-icon>
+        <span>{{ error }}</span>
         <button
-          type="submit"
-          class="btn-primary"
-          [disabled]="productoForm.invalid || submitting"
+          mat-button
+          color="primary"
+          (click)="cargarProducto(productoActual?.id!)"
         >
-          {{
-            submitting
-              ? "Guardando..."
-              : editMode
-                ? "Actualizar"
-                : "Crear Producto"
-          }}
+          Reintentar
         </button>
       </div>
-    </div>
-  </form>
+
+      <!-- Form -->
+      <form
+        *ngIf="!loading"
+        [formGroup]="productoForm"
+        (ngSubmit)="onSubmit()"
+        class="product-form"
+      >
+        <!-- Código de Barras -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Código de Barras</mat-label>
+          <input
+            matInput
+            formControlName="codigoBarras"
+            placeholder="Ej: 750123456789"
+          />
+          <mat-icon matSuffix>qr_code_scanner</mat-icon>
+          <mat-error *ngIf="isFieldInvalid('codigoBarras')">
+            El código de barras es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Nombre -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nombre del Producto</mat-label>
+          <input
+            matInput
+            formControlName="nombre"
+            placeholder="Ej: Peluche de Oso"
+          />
+          <mat-error *ngIf="isFieldInvalid('nombre')">
+            El nombre es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <div class="form-row grid-2">
+          <!-- Categoría -->
+          <mat-form-field appearance="outline">
+            <mat-label>Categoría</mat-label>
+            <mat-select formControlName="categoria">
+              <mat-option value="">Selecciona una categoría</mat-option>
+              <mat-option value="cosmeticos">Cosméticos</mat-option>
+              <mat-option value="peluches">Peluches</mat-option>
+              <mat-option value="bolsas">Bolsas</mat-option>
+              <mat-option value="carteras">Carteras</mat-option>
+              <mat-option value="otros">Otros</mat-option>
+            </mat-select>
+            <mat-error *ngIf="isFieldInvalid('categoria')">
+              La categoría es requerida
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Precio -->
+          <mat-form-field appearance="outline">
+            <mat-label>Precio</mat-label>
+            <span matTextPrefix>$ &nbsp;</span>
+            <input
+              matInput
+              type="number"
+              formControlName="precio"
+              step="0.01"
+              min="0"
+            />
+            <mat-error *ngIf="isFieldInvalid('precio')">
+              El precio debe ser mayor a 0
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row grid-2">
+          <!-- Stock -->
+          <mat-form-field appearance="outline">
+            <mat-label>Stock</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="stock"
+              min="0"
+              step="1"
+            />
+            <mat-error *ngIf="isFieldInvalid('stock')">
+              El stock debe ser 0 o más
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Descripción -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Descripción (opcional)</mat-label>
+          <textarea
+            matInput
+            formControlName="descripcion"
+            rows="3"
+            placeholder="Descripción del producto..."
+          ></textarea>
+        </mat-form-field>
+
+        <!-- Imagen -->
+        <div class="file-upload-section">
+          <div class="file-upload-label">
+            <mat-icon>image</mat-icon>
+            <span>Imagen del Producto</span>
+          </div>
+
+          <div
+            class="file-upload-area"
+            (click)="fileInput.click()"
+            [class.has-image]="imagenPreview || productoActual?.imagenUrl"
+          >
+            <input
+              #fileInput
+              type="file"
+              hidden
+              (change)="onImagenSeleccionada($event)"
+              accept="image/*"
+              id="fileInput"
+            />
+
+            <div
+              *ngIf="!imagenPreview && !productoActual?.imagenUrl"
+              class="upload-placeholder"
+            >
+              <mat-icon>cloud_upload</mat-icon>
+              <span>Haz clic para seleccionar una imagen</span>
+              <span class="file-hint">PNG, JPG o WebP</span>
+            </div>
+
+            <div
+              *ngIf="imagenPreview || productoActual?.imagenUrl"
+              class="image-preview-container"
+            >
+              <img
+                [src]="imagenPreview || productoActual?.imagenUrl"
+                alt="Vista previa"
+                class="image-preview"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="form-actions">
+          <button mat-button type="button" routerLink="/productos">
+            Cancelar
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="productoForm.invalid || submitting"
+          >
+            <mat-icon>{{ editMode ? "save" : "add" }}</mat-icon>
+            {{
+              submitting
+                ? "Guardando..."
+                : editMode
+                  ? "Actualizar"
+                  : "Crear Producto"
+            }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>
