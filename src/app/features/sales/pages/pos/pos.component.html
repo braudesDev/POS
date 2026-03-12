@@ -1,10 +1,19 @@
 <div class="pos-container">
   <div class="pos-grid">
+    <!-- Panel Izquierdo -->
     <div class="left-panel">
-      <app-scanner (productoAgregado)="onProductoAgregado()"></app-scanner>
-      <app-cart></app-cart>
+      <!-- Escáner fijo arriba -->
+      <div class="scanner-fixed">
+        <app-scanner (productoAgregado)="onProductoAgregado()"></app-scanner>
+      </div>
+
+      <!-- Carrito con scroll propio -->
+      <div class="cart-scrollable">
+        <app-cart></app-cart>
+      </div>
     </div>
 
+    <!-- Panel Derecho -->
     <div class="right-panel">
       <app-checkout></app-checkout>
     </div>

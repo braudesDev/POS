@@ -4,9 +4,11 @@
   flex-direction: column;
   background: var(--mat-sys-surface-container-low);
   transition: background-color 0.3s ease;
+  overflow: hidden; /* Necesario para evitar doble scroll */
 }
 
 .pos-header {
+  flex-shrink: 0; /* No se encoge */
   background: var(--mat-sys-surface);
   padding: 1rem 2rem;
   display: flex;
@@ -14,72 +16,6 @@
   align-items: center;
   box-shadow: var(--mat-sys-level2);
   border-bottom: 1px solid var(--mat-sys-outline-variant);
-  transition:
-    background-color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.pos-header h1 {
-  margin: 0;
-  color: var(--mat-sys-on-surface);
-  font-size: 1.5rem;
-  transition: color 0.3s ease;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-reports {
-  padding: 0.5rem 1rem;
-  background: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
-  border: none;
-  border-radius: var(--mat-sys-corner-small);
-  cursor: pointer;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
-}
-
-.btn-reports:hover {
-  background: var(--mat-sys-primary-container);
-  color: var(--mat-sys-on-primary-container);
-}
-
-.btn-reports:active {
-  transform: scale(0.95);
-}
-
-.btn-products {
-  padding: 0.5rem 1rem;
-  background: var(--mat-sys-secondary);
-  color: var(--mat-sys-on-secondary);
-  border: none;
-  border-radius: var(--mat-sys-corner-small);
-  cursor: pointer;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
-}
-
-.btn-products:hover {
-  background: var(--mat-sys-secondary-container);
-  color: var(--mat-sys-on-secondary-container);
-}
-
-.btn-products:active {
-  transform: scale(0.95);
 }
 
 .pos-grid {
@@ -88,21 +24,138 @@
   grid-template-columns: 1fr 350px;
   gap: 1rem;
   padding: 1rem;
-  overflow: hidden;
+  min-height: 0; /* CRÍTICO: Permite que los hijos se encojan correctamente */
+  overflow: hidden; /* Evita scroll en el grid */
 }
 
 .left-panel {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  overflow-y: auto;
+  min-height: 0; /* CRÍTICO */
+  overflow-y: auto; /* Scroll aquí */
+
+  /* MEJORAS PARA LA BARRA DE SCROLL */
+  scrollbar-gutter: stable; /* Reserva espacio para la barra */
+  padding-right: 8px; /* Espacio adicional para la barra */
+
+  /* Scrollbar personalizada - MÁS ANCHA */
+  scrollbar-width: auto; /* En Firefox, auto es más ancho que thin */
+}
+
+/* Personalización para Chrome/Edge/Safari */
+.left-panel::-webkit-scrollbar {
+  width: 10px; /* Más ancha para que se vea completa */
+}
+
+.left-panel::-webkit-scrollbar-track {
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 5px;
+  margin: 2px; /* Pequeño margen para que no se pegue a los bordes */
+}
+
+.left-panel::-webkit-scrollbar-thumb {
+  background: var(--mat-sys-primary);
+  border-radius: 5px;
+  border: 2px solid transparent; /* Crea un efecto de padding interno */
+  background-clip: padding-box; /* Hace que el borde sea transparente */
+}
+
+.left-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--mat-sys-primary-container);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Espacio al final del scroll para que se vea completo */
+.left-panel::after {
+  content: "";
+  display: block;
+  height: 8px; /* Espacio adicional al final */
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .right-panel {
   overflow-y: auto;
+  min-height: 0;
+
+  /* Mismas mejoras para el panel derecho */
+  scrollbar-gutter: stable;
+  padding-right: 8px;
+  scrollbar-width: auto;
 }
 
-/* Estilos para los placeholders (si se usan) */
+.right-panel::-webkit-scrollbar {
+  width: 10px;
+}
+
+.right-panel::-webkit-scrollbar-track {
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 5px;
+  margin: 2px;
+}
+
+.right-panel::-webkit-scrollbar-thumb {
+  background: var(--mat-sys-primary);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.right-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--mat-sys-primary-container);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Los componentes hijos deben permitir que el scroll funcione */
+app-scanner,
+app-cart,
+app-checkout {
+  display: block;
+  width: 100%;
+}
+
+/* Para el carrito específicamente - asegurar que ocupe todo el ancho */
+app-cart {
+  width: 100%;
+  overflow: visible; /* Importante para no crear otro scroll */
+}
+
+/* Resto de estilos se mantienen igual */
+.btn-reports,
+.btn-products {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--mat-sys-corner-small);
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.btn-reports {
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+}
+
+.btn-reports:hover {
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.btn-products {
+  background: var(--mat-sys-secondary);
+  color: var(--mat-sys-on-secondary);
+}
+
+.btn-products:hover {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
 .checkout-placeholder {
   background: var(--mat-sys-surface);
   border-radius: var(--mat-sys-corner-large);
@@ -113,7 +166,6 @@
   border: 1px solid var(--mat-sys-outline-variant);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .pos-header {
     padding: 1rem;
@@ -131,7 +183,6 @@
   }
 }
 
-/* Animación para el contenido al cambiar tema */
 * {
   transition:
     background-color 0.2s ease,
@@ -140,7 +191,6 @@
     box-shadow 0.2s ease;
 }
 
-/* Optimizar para dispositivos que prefieren menos movimiento */
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;

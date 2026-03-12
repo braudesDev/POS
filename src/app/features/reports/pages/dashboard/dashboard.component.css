@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   background: var(--mat-sys-surface-container-low);
-  overflow: hidden; /* ← EVITA SCROLL EN EL CONTENEDOR PRINCIPAL */
+  overflow: hidden;
 }
 
 .dashboard-toolbar {
@@ -17,11 +17,52 @@
 
 .dashboard-content {
   flex: 1;
-  overflow-y: auto; /* ← ÚNICO SCROLL PERMITIDO */
+  min-height: 0; /* ← AÑADIR */
+  overflow-y: auto;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  /* MEJORAS PARA LA BARRA DE SCROLL */
+  scrollbar-gutter: stable; /* Reserva espacio para la barra */
+  padding-right: 12px; /* Espacio adicional para la barra */
+
+  /* Scrollbar personalizada - MÁS ANCHA */
+  scrollbar-width: auto; /* En Firefox, auto es más ancho que thin */
+}
+
+/* Personalización para Chrome/Edge/Safari */
+.dashboard-content::-webkit-scrollbar {
+  width: 10px; /* Más ancha que 8px */
+}
+
+.dashboard-content::-webkit-scrollbar-track {
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 5px;
+  margin: 2px; /* Pequeño margen para que no se pegue */
+}
+
+.dashboard-content::-webkit-scrollbar-thumb {
+  background: var(--mat-sys-primary);
+  border-radius: 5px;
+  border: 2px solid transparent; /* Crea un efecto de padding interno */
+  background-clip: padding-box; /* Hace que el borde sea transparente */
+}
+
+.dashboard-content::-webkit-scrollbar-thumb:hover {
+  background: var(--mat-sys-primary-container);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Espacio al final del scroll para que se vea completo */
+.dashboard-content::after {
+  content: "";
+  display: block;
+  height: 12px; /* Espacio adicional al final */
+  width: 100%;
+  flex-shrink: 0;
 }
 
 /* FORZAR que todos los elementos internos NO tengan scroll */
@@ -36,12 +77,36 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  min-height: 0; /* Añadir para que el scroll interno funcione */
 }
 
 .products-card .mat-mdc-card-content,
 .recent-sales-card .mat-mdc-card-content {
   overflow-y: auto !important;
   max-height: 300px;
+
+  /* También mejorar el scroll interno de las tarjetas */
+  scrollbar-gutter: stable;
+  padding-right: 8px;
+}
+
+.products-card .mat-mdc-card-content::-webkit-scrollbar,
+.recent-sales-card .mat-mdc-card-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.products-card .mat-mdc-card-content::-webkit-scrollbar-track,
+.recent-sales-card .mat-mdc-card-content::-webkit-scrollbar-track {
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 4px;
+}
+
+.products-card .mat-mdc-card-content::-webkit-scrollbar-thumb,
+.recent-sales-card .mat-mdc-card-content::-webkit-scrollbar-thumb {
+  background: var(--mat-sys-primary);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 .loading-container {
@@ -228,24 +293,6 @@ mat-list-item {
   font-style: italic;
   text-align: center;
   padding: 1rem;
-}
-
-/* Scroll personalizado - SOLO para el contenido principal */
-.dashboard-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.dashboard-content::-webkit-scrollbar-track {
-  background: var(--mat-sys-surface-container-low);
-}
-
-.dashboard-content::-webkit-scrollbar-thumb {
-  background: var(--mat-sys-primary);
-  border-radius: var(--mat-sys-corner-full);
-}
-
-.dashboard-content::-webkit-scrollbar-thumb:hover {
-  background: var(--mat-sys-primary-container);
 }
 
 /* Responsive */

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Producto } from '../../products/models/producto.model';
 import { ProductsService } from '../../products/services/products.service';
 
@@ -86,6 +86,18 @@ export class CarritoService {
       item.subtotal = item.producto.precio * cantidad;
       this.carritoSubject.next([...carritoActual]);
     }
+  }
+
+  verificcarStock(
+    productoId: string,
+    cantidadSolicitada: number,
+  ): Observable<boolean> {
+    return this.productsService.getProductoById(productoId).pipe(
+      map((producto) => {
+        if (!producto) return false;
+        return cantidadSolicitada <= producto.stock;
+      }),
+    );
   }
 
   /**

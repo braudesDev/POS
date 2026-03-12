@@ -4,10 +4,7 @@
       <mat-icon>shopping_cart</mat-icon>
       Carrito de Ventas
     </mat-card-title>
-    <div class="custom-badge-container">
-      <mat-icon class="cart-icon">shopping_cart</mat-icon>
-      <span class="custom-badge" *ngIf="totalItems > 0">{{ totalItems }}</span>
-    </div>
+    <span class="badge">{{ totalItems }} items</span>
   </mat-card-header>
 
   <mat-card-content>
@@ -31,6 +28,33 @@
               <span class="item-price">${{ item.producto.precio }}</span>
             </div>
 
+            <!-- Indicador de stock -->
+            <div
+              class="stock-info"
+              *ngIf="stockDisponible[item.producto.id!] !== undefined"
+            >
+              <mat-icon
+                [color]="getStockColor(item)"
+                matTooltip="Stock disponible: {{
+                  stockDisponible[item.producto.id!]
+                }}"
+              >
+                {{
+                  item.cantidad >= stockDisponible[item.producto.id!]
+                    ? "warning"
+                    : "inventory"
+                }}
+              </mat-icon>
+              <span
+                class="stock-text"
+                [class.stock-bajo]="
+                  item.cantidad >= stockDisponible[item.producto.id!]
+                "
+              >
+                {{ stockDisponible[item.producto.id!] }} disp.
+              </span>
+            </div>
+
             <div class="item-actions">
               <button
                 mat-icon-button
@@ -46,7 +70,19 @@
               <button
                 mat-icon-button
                 (click)="aumentarCantidad(item)"
-                matTooltip="Aumentar cantidad"
+                [disabled]="
+                  item.cantidad >= (stockDisponible[item.producto.id!] || 0)
+                "
+                [color]="
+                  item.cantidad >= (stockDisponible[item.producto.id!] || 0)
+                    ? 'warn'
+                    : 'primary'
+                "
+                matTooltip="{{
+                  item.cantidad >= (stockDisponible[item.producto.id!] || 0)
+                    ? 'Stock máximo alcanzado'
+                    : 'Aumentar cantidad'
+                }}"
               >
                 <mat-icon>add</mat-icon>
               </button>

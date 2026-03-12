@@ -38,6 +38,16 @@ body {
     box-shadow 0.2s ease;
 }
 
+.warning-snackbar {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+  border-left: 4px solid var(--mat-sys-error);
+}
+
+.warning-snackbar .mat-simple-snackbar-action {
+  color: var(--mat-sys-error);
+}
+
 /* Optimizar para dispositivos que prefieren menos movimiento */
 @media (prefers-reduced-motion: reduce) {
   * {

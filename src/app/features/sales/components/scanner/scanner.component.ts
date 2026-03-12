@@ -5,6 +5,7 @@ import {
   inject,
   ViewChild,
   ElementRef,
+  AfterViewInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -18,7 +19,7 @@ import { MaterialModule } from '../../../../shared/material/material.module';
   templateUrl: './scanner.component.html',
   styleUrls: ['./scanner.component.css'],
 })
-export class ScannerComponent {
+export class ScannerComponent implements AfterViewInit {
   @Output() productoAgregado = new EventEmitter<any>();
   @ViewChild('scannerInput') scannerInput!: ElementRef;
 
@@ -28,14 +29,26 @@ export class ScannerComponent {
   codigoManual = '';
   mensaje = '';
   mensajeError = false;
-  scannerActivo = false;
+  scannerActivo = true;
   private codigoBuffer = '';
   private timeoutId: any;
   private readonly TIMEOUT_MS = 150; // 150ms de inactividad
 
+  ngAfterViewInit(): void {
+    //Itentar enfocar inmediatamente, pero también establecer un timeout por si el enfoque falla inicialmente
+    this.enfocarScanner();
+
+    //Reiniciar despues de un segundo para asegurar que el input esté listo
+    setTimeout(() => {
+      if (!this.scannerActivo) {
+        this.enfocarScanner();
+      }
+    }, 1000);
+  }
+
   enfocarScanner() {
     this.scannerActivo = true;
-    this.mensaje = '✅ Escáner activo - Escanea ahora';
+    this.mensaje = 'Escáner activo - Escanea ahora';
     setTimeout(() => {
       this.scannerInput.nativeElement.focus();
       console.log(
@@ -47,11 +60,11 @@ export class ScannerComponent {
 
   onFocus() {
     this.scannerActivo = true;
-    this.mensaje = '✅ Escáner activo - Escanea ahora';
+    this.mensaje = 'Escáner activo - Escanea ahora';
   }
 
   onBlur() {
-    this.scannerActivo = false;
+    this.scannerActivo = true; // Mantener activo para seguir recibiendo eventos
     this.mensaje = '';
   }
 
@@ -130,7 +143,7 @@ export class ScannerComponent {
     this.carritoService.agregarPorCodigo(codigo).subscribe({
       next: (encontrado) => {
         if (encontrado) {
-          this.mensaje = '✅ Producto agregado al carrito';
+          this.mensaje = 'Producto agregado al carrito';
           this.productoAgregado.emit();
         } else {
           this.mensaje = '❌ Producto no encontrado';

@@ -4,18 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ReportsService, Venta } from '../../services/reports.service';
 import { MaterialModule } from '../../../../shared/material/material.module';
-import { ThemeToggleComponent } from '../../../../shared/components/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-sales-history',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    MaterialModule,
-    ThemeToggleComponent,
-  ],
+  imports: [CommonModule, FormsModule, RouterModule, MaterialModule],
   templateUrl: './sales-history.component.html',
   styleUrls: ['./sales-history.component.css'],
 })
