@@ -1,60 +1,90 @@
-<div class="cart-container">
-  <div class="cart-header">
-    <h3>Carrito de Ventas</h3>
-    <span class="badge">{{ totalItems }} items</span>
-  </div>
+<mat-card class="cart-container">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>shopping_cart</mat-icon>
+      Carrito de Ventas
+    </mat-card-title>
+    <div class="custom-badge-container">
+      <mat-icon class="cart-icon">shopping_cart</mat-icon>
+      <span class="custom-badge" *ngIf="totalItems > 0">{{ totalItems }}</span>
+    </div>
+  </mat-card-header>
 
-  <!-- Carrito vacío -->
-  <div
-    *ngIf="(carritoService.carrito$ | async)?.length === 0"
-    class="empty-cart"
-  >
-    <mat-icon>shopping_cart</mat-icon>
-    <p>Carrito vacío</p>
-    <small>Escanea o busca un producto</small>
-  </div>
+  <mat-card-content>
+    <!-- Carrito vacío -->
+    <div
+      *ngIf="(carritoService.carrito$ | async)?.length === 0"
+      class="empty-cart"
+    >
+      <mat-icon class="empty-icon">shopping_cart</mat-icon>
+      <p>Carrito vacío</p>
+      <small>Escanea o busca un producto</small>
+    </div>
 
-  <!-- Items del carrito -->
-  <ng-container *ngIf="carritoService.carrito$ | async as carrito">
-    <div *ngFor="let item of carrito" class="cart-item">
-      <div class="item-info">
-        <div class="item-name">{{ item.producto.nombre }}</div>
-        <div class="item-price">${{ item.producto.precio }}</div>
-      </div>
+    <!-- Items del carrito -->
+    <ng-container *ngIf="carritoService.carrito$ | async as carrito">
+      <mat-list>
+        <mat-list-item *ngFor="let item of carrito" class="cart-item">
+          <div class="item-content">
+            <div class="item-info">
+              <span class="item-name">{{ item.producto.nombre }}</span>
+              <span class="item-price">${{ item.producto.precio }}</span>
+            </div>
 
-      <div class="item-controls">
+            <div class="item-actions">
+              <button
+                mat-icon-button
+                (click)="disminuirCantidad(item)"
+                [disabled]="item.cantidad <= 1"
+                matTooltip="Disminuir cantidad"
+              >
+                <mat-icon>remove</mat-icon>
+              </button>
+
+              <span class="item-qty">{{ item.cantidad }}</span>
+
+              <button
+                mat-icon-button
+                (click)="aumentarCantidad(item)"
+                matTooltip="Aumentar cantidad"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+
+              <span class="item-subtotal">${{ item.subtotal }}</span>
+
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="eliminar(item.producto.id!)"
+                matTooltip="Eliminar producto"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-list-item>
+      </mat-list>
+
+      <!-- Footer -->
+      <div *ngIf="carrito.length > 0" class="cart-footer">
+        <mat-divider></mat-divider>
+
+        <div class="cart-total">
+          <span>Total:</span>
+          <span class="total-amount">${{ carritoService.getTotal() }}</span>
+        </div>
+
         <button
-          class="btn-qty"
-          (click)="disminuirCantidad(item)"
-          [disabled]="item.cantidad <= 1"
+          mat-stroked-button
+          color="warn"
+          (click)="limpiarCarrito()"
+          class="btn-clear"
         >
-          −
+          <mat-icon>delete_sweep</mat-icon>
+          Limpiar Carrito
         </button>
-        <span class="item-qty">{{ item.cantidad }}</span>
-        <button class="btn-qty" (click)="aumentarCantidad(item)">+</button>
       </div>
-
-      <div class="item-subtotal">${{ item.subtotal }}</div>
-
-      <button
-        class="btn-remove"
-        (click)="eliminar(item.producto.id!)"
-        title="Eliminar"
-      >
-        <span class="remove-icon">✕</span>
-      </button>
-    </div>
-
-    <!-- Footer -->
-    <div *ngIf="carrito.length > 0" class="cart-footer">
-      <div class="cart-total">
-        <span>Total:</span>
-        <strong>${{ carritoService.getTotal() }}</strong>
-      </div>
-
-      <button class="btn-clear" (click)="limpiarCarrito()">
-        Limpiar Carrito
-      </button>
-    </div>
-  </ng-container>
-</div>
+    </ng-container>
+  </mat-card-content>
+</mat-card>

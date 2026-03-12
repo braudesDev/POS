@@ -8,11 +8,14 @@ import {
   Venta,
 } from '../../services/reports.service';
 import { Subscription } from 'rxjs';
+import { MaterialModule } from '../../../../shared/material/material.module';
+import { ThemeToggleComponent } from '../../../../shared/components/theme-toggle/theme-toggle.component';
+import { NavigationComponent } from '../../../../shared/components/navigation/navigation.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, MaterialModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
@@ -92,6 +95,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.porcentajeTarjeta = (resumen.ventasTarjeta / total) * 100;
       this.porcentajeTransferencia =
         (resumen.ventasTransferencia / total) * 100;
+    }
+  }
+
+  getChipColor(metodo: string): string {
+    switch (metodo) {
+      case 'efectivo':
+        return 'primary';
+      case 'tarjeta':
+        return 'accent';
+      case 'transferencia':
+        return 'warn';
+      default:
+        return '';
     }
   }
 }

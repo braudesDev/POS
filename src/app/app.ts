@@ -1,28 +1,18 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { NavigationComponent } from './shared/components/navigation/navigation.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
-  template: `
-    <main>
-      <router-outlet></router-outlet>
-    </main>
-  `,
+  imports: [NavigationComponent],
+  template: ` <app-navigation></app-navigation> `,
   styles: [
     `
-      main {
-        font-family:
-          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-          Arial, sans-serif;
-        margin: 0;
-        padding: 0;
+      :host {
+        display: block;
+        height: 100vh;
       }
     `,
   ],
 })
-export class App {
-  protected readonly title = signal('tienda-pdv');
-}
+export class App {}

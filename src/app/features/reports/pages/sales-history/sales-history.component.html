@@ -1,112 +1,200 @@
 <div class="history-container">
-  <div class="header">
-    <h1>Historial de Ventas</h1>
-    <div class="header-actions">
-      <button class="btn-back" routerLink="/reportes">
-        ← Volver al Dashboard
+  <!-- Header con Material -->
+  <mat-toolbar color="primary" class="history-toolbar">
+    <span>Historial de Ventas</span>
+    <span class="toolbar-spacer"></span>
+    <app-theme-toggle></app-theme-toggle>
+    <button mat-button routerLink="/reportes">
+      <mat-icon>dashboard</mat-icon>
+      Dashboard
+    </button>
+  </mat-toolbar>
+
+  <div class="content-container">
+    <!-- Filtros con Material -->
+    <mat-card class="filters-card">
+      <mat-card-content>
+        <div class="filters-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha inicio</mat-label>
+            <input
+              matInput
+              type="date"
+              [(ngModel)]="fechaInicio"
+              (change)="cargarVentas()"
+              class="filter-input"
+            />
+            <mat-icon matSuffix>calendar_today</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha fin</mat-label>
+            <input
+              matInput
+              type="date"
+              [(ngModel)]="fechaFin"
+              (change)="cargarVentas()"
+              class="filter-input"
+            />
+            <mat-icon matSuffix>calendar_today</mat-icon>
+          </mat-form-field>
+
+          <button mat-raised-button color="warn" (click)="resetFiltros()">
+            <mat-icon>refresh</mat-icon>
+            Reset
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Loading State -->
+    <div *ngIf="cargando" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando ventas...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="error-container">
+      <mat-icon color="warn">error</mat-icon>
+      <span>{{ error }}</span>
+      <button mat-button color="primary" (click)="cargarVentas()">
+        Reintentar
       </button>
     </div>
-  </div>
 
-  <!-- Filtros -->
-  <div class="filters">
-    <div class="filter-group">
-      <label>Fecha inicio:</label>
-      <input
-        type="date"
-        [(ngModel)]="fechaInicio"
-        (change)="cargarVentas()"
-        class="filter-input"
-      />
-    </div>
-    <div class="filter-group">
-      <label>Fecha fin:</label>
-      <input
-        type="date"
-        [(ngModel)]="fechaFin"
-        (change)="cargarVentas()"
-        class="filter-input"
-      />
-    </div>
-    <button class="btn-reset" (click)="resetFiltros()">⟲ Reset</button>
-  </div>
+    <!-- Resumen del período -->
+    <div *ngIf="!cargando && !error && ventas.length > 0" class="summary-grid">
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <div class="summary-icon">
+            <mat-icon>receipt</mat-icon>
+          </div>
+          <div class="summary-info">
+            <span class="summary-label">Ventas en período</span>
+            <span class="summary-value">{{ ventas.length }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
 
-  <!-- Loading State -->
-  <div *ngIf="cargando" class="loading">Cargando ventas...</div>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <div class="summary-icon">
+            <mat-icon>payments</mat-icon>
+          </div>
+          <div class="summary-info">
+            <span class="summary-label">Total ingresos</span>
+            <span class="summary-value">${{ totalPeriodo }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
 
-  <!-- Error State -->
-  <div *ngIf="error" class="error">
-    {{ error }}
-  </div>
+      <mat-card class="summary-card">
+        <mat-card-content>
+          <div class="summary-icon">
+            <mat-icon>show_chart</mat-icon>
+          </div>
+          <div class="summary-info">
+            <span class="summary-label">Promedio por venta</span>
+            <span class="summary-value"
+              >${{ (totalPeriodo / ventas.length).toFixed(2) }}</span
+            >
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
 
-  <!-- Resumen del período -->
-  <div *ngIf="!cargando && !error && ventas.length > 0" class="period-summary">
-    <div class="summary-card">
-      <span class="summary-label">Ventas en período</span>
-      <span class="summary-value">{{ ventas.length }}</span>
-    </div>
-    <div class="summary-card">
-      <span class="summary-label">Total ingresos</span>
-      <span class="summary-value">${{ totalPeriodo }}</span>
-    </div>
-    <div class="summary-card">
-      <span class="summary-label">Promedio por venta</span>
-      <span class="summary-value"
-        >${{ (totalPeriodo / ventas.length).toFixed(2) }}</span
-      >
-    </div>
-  </div>
+    <!-- Tabla de ventas con Material -->
+    <div *ngIf="!cargando && !error" class="table-container">
+      <table mat-table [dataSource]="ventas" class="mat-elevation-z8">
+        <!-- Fecha Column -->
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let venta">
+            {{ venta.fecha.toDate() | date: "dd/MM/yyyy" }}
+          </td>
+        </ng-container>
 
-  <!-- Tabla de ventas -->
-  <div *ngIf="!cargando && !error" class="table-container">
-    <table class="sales-table">
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Hora</th>
-          <th>Productos</th>
-          <th>Total</th>
-          <th>Método</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let venta of ventas">
-          <td>{{ venta.fecha.toDate() | date: "dd/MM/yyyy" }}</td>
-          <td>{{ venta.fecha.toDate() | date: "HH:mm" }}</td>
-          <td>
-            <span class="product-count" (click)="toggleDetalle(venta)">
-              {{ venta.items.length }} productos ▼
-            </span>
-            <div *ngIf="venta.mostrarDetalle" class="product-detail">
-              <div *ngFor="let item of venta.items" class="detail-item">
-                <span>{{ item.cantidad }} x {{ item.nombre }}</span>
-                <span>${{ item.subtotal }}</span>
+        <!-- Hora Column -->
+        <ng-container matColumnDef="hora">
+          <th mat-header-cell *matHeaderCellDef>Hora</th>
+          <td mat-cell *matCellDef="let venta">
+            {{ venta.fecha.toDate() | date: "HH:mm" }}
+          </td>
+        </ng-container>
+
+        <!-- Productos Column -->
+        <ng-container matColumnDef="productos">
+          <th mat-header-cell *matHeaderCellDef>Productos</th>
+          <td mat-cell *matCellDef="let venta">
+            <div class="productos-cell">
+              <span class="product-count" (click)="toggleDetalle(venta)">
+                {{ venta.items.length }} productos
+                <mat-icon>{{
+                  venta.mostrarDetalle ? "expand_less" : "expand_more"
+                }}</mat-icon>
+              </span>
+              <div *ngIf="venta.mostrarDetalle" class="product-detail">
+                <div *ngFor="let item of venta.items" class="detail-item">
+                  <span>{{ item.cantidad }} x {{ item.nombre }}</span>
+                  <span>${{ item.subtotal }}</span>
+                </div>
               </div>
             </div>
           </td>
-          <td class="total-cell">${{ venta.total }}</td>
-          <td>
-            <span class="method-badge" [ngClass]="'method-' + venta.metodoPago">
-              {{ venta.metodoPago }}
-            </span>
+        </ng-container>
+
+        <!-- Total Column -->
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef>Total</th>
+          <td mat-cell *matCellDef="let venta" class="total-cell">
+            ${{ venta.total }}
           </td>
-          <td>
+        </ng-container>
+
+        <!-- Método Column -->
+        <ng-container matColumnDef="metodo">
+          <th mat-header-cell *matHeaderCellDef>Método</th>
+          <td mat-cell *matCellDef="let venta">
+            <mat-chip [ngClass]="'metodo-' + venta.metodoPago" selected>
+              {{ venta.metodoPago }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Acciones Column -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let venta">
             <button
-              class="btn-print"
+              mat-icon-button
+              color="primary"
               (click)="imprimirTicket(venta)"
-              title="Reimprimir ticket"
+              matTooltip="Reimprimir ticket"
             >
-              🖨️
+              <mat-icon>print</mat-icon>
             </button>
           </td>
-        </tr>
-        <tr *ngIf="ventas.length === 0">
-          <td colspan="6" class="empty-state">
-            No hay ventas en el período seleccionado
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <!-- Empty State -->
+        <tr class="mat-row" *ngIf="ventas.length === 0">
+          <td
+            class="mat-cell empty-state"
+            [attr.colspan]="displayedColumns.length"
+          >
+            <mat-icon>inbox</mat-icon>
+            <p>No hay ventas en el período seleccionado</p>
           </td>
         </tr>
-      </tbody>
-    </table>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 25]"
+        showFirstLastButtons
+      ></mat-paginator>
+    </div>
   </div>
 </div>

@@ -1,0 +1,36 @@
+<div class="theme-toggle-container">
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="themeMenu"
+    [attr.aria-label]="'Cambiar tema'"
+    class="theme-button"
+  >
+    <mat-icon>{{ getThemeIcon() }}</mat-icon>
+  </button>
+
+  <mat-menu #themeMenu="matMenu" class="theme-menu">
+    <button mat-menu-item (click)="setTheme('light')">
+      <mat-icon>light_mode</mat-icon>
+      <span>Claro</span>
+      <mat-icon *ngIf="currentTheme() === 'light'" class="check-icon"
+        >check</mat-icon
+      >
+    </button>
+
+    <button mat-menu-item (click)="setTheme('dark')">
+      <mat-icon>dark_mode</mat-icon>
+      <span>Oscuro</span>
+      <mat-icon *ngIf="currentTheme() === 'dark'" class="check-icon"
+        >check</mat-icon
+      >
+    </button>
+
+    <button mat-menu-item (click)="setTheme('system')">
+      <mat-icon>settings_suggest</mat-icon>
+      <span>Sistema</span>
+      <mat-icon *ngIf="currentTheme() === 'system'" class="check-icon"
+        >check</mat-icon
+      >
+    </button>
+  </mat-menu>
+</div>

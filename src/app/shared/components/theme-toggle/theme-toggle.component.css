@@ -1,0 +1,43 @@
+.theme-toggle-container {
+  display: inline-block;
+  margin: 0 0.5rem;
+}
+
+.theme-button {
+  transition: transform 0.2s ease;
+}
+
+.theme-button:hover {
+  transform: rotate(15deg);
+}
+
+.theme-menu .mat-mdc-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 180px;
+}
+
+.check-icon {
+  margin-left: auto;
+  color: var(--mat-sys-primary);
+  font-size: 1.2rem;
+}
+
+/* Animación para el icono cuando cambia */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.theme-button mat-icon {
+  transition: all 0.3s ease;
+}
+
+.theme-button:active mat-icon {
+  animation: spin 0.5s ease;
+}

@@ -1,0 +1,75 @@
+<mat-toolbar color="primary" class="nav-toolbar">
+  <button mat-icon-button (click)="sidenav.toggle()" class="menu-button">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <span class="app-title">PDV Tienda de Regalos</span>
+
+  <span class="toolbar-spacer"></span>
+
+  <app-theme-toggle></app-theme-toggle>
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="push" position="start" class="sidenav">
+    <mat-toolbar color="primary" class="sidenav-header">
+      <span>Menú</span>
+      <button mat-icon-button (click)="sidenav.close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <mat-nav-list>
+      <mat-list-item
+        (click)="sidenav.close()"
+        routerLink="/pos"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <mat-icon matListItemIcon>point_of_sale</mat-icon>
+        <span matListItemTitle>Punto de Venta</span>
+      </mat-list-item>
+
+      <mat-list-item
+        (click)="sidenav.close()"
+        routerLink="/productos"
+        routerLinkActive="active"
+      >
+        <mat-icon matListItemIcon>inventory</mat-icon>
+        <span matListItemTitle>Catálogo</span>
+      </mat-list-item>
+
+      <mat-list-item
+        (click)="sidenav.close()"
+        routerLink="/reportes"
+        routerLinkActive="active"
+      >
+        <mat-icon matListItemIcon>bar_chart</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </mat-list-item>
+
+      <mat-list-item
+        (click)="sidenav.close()"
+        routerLink="/reportes/historial"
+        routerLinkActive="active"
+      >
+        <mat-icon matListItemIcon>history</mat-icon>
+        <span matListItemTitle>Historial</span>
+      </mat-list-item>
+
+      <mat-divider></mat-divider>
+
+      <mat-list-item (click)="cerrarSesion()">
+        <mat-icon matListItemIcon>exit_to_app</mat-icon>
+        <span matListItemTitle>Cerrar Sesión</span>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="content-wrapper">
+      <!-- ESTO ES CRÍTICO - Aquí se renderizan los componentes hijos -->
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -3,11 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ReportsService, Venta } from '../../services/reports.service';
+import { MaterialModule } from '../../../../shared/material/material.module';
+import { ThemeToggleComponent } from '../../../../shared/components/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-sales-history',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    MaterialModule,
+    ThemeToggleComponent,
+  ],
   templateUrl: './sales-history.component.html',
   styleUrls: ['./sales-history.component.css'],
 })
@@ -78,4 +86,13 @@ export class SalesHistoryComponent implements OnInit {
     console.log('Imprimir ticket:', venta);
     alert('Funcionalidad de impresión próximamente');
   }
+
+  displayedColumns: string[] = [
+    'fecha',
+    'hora',
+    'productos',
+    'total',
+    'metodo',
+    'acciones',
+  ];
 }

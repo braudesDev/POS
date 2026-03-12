@@ -1,115 +1,151 @@
-<div class="checkout-container">
-  <h3>Finalizar Venta</h3>
+<mat-card class="checkout-container">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>payment</mat-icon>
+      Finalizar Venta
+    </mat-card-title>
+  </mat-card-header>
 
-  <!-- Resumen del carrito -->
-  <div class="cart-summary" *ngIf="items.length > 0">
-    <div class="summary-row" *ngFor="let item of items">
-      <span>{{ item.cantidad }} x {{ item.producto.nombre }}</span>
-      <span>${{ item.subtotal }}</span>
-    </div>
+  <mat-card-content>
+    <!-- Resumen del carrito -->
+    <mat-card
+      *ngIf="items.length > 0"
+      class="cart-summary"
+      appearance="outlined"
+    >
+      <mat-card-content>
+        <div class="summary-items">
+          <div class="summary-row" *ngFor="let item of items">
+            <span>{{ item.cantidad }} x {{ item.producto.nombre }}</span>
+            <span class="summary-amount">${{ item.subtotal }}</span>
+          </div>
+        </div>
 
-    <div class="summary-total">
-      <strong>Total:</strong>
-      <strong>${{ total }}</strong>
-    </div>
-  </div>
+        <mat-divider></mat-divider>
 
-  <!-- Formulario de checkout -->
-  <form
-    *ngIf="items.length > 0"
-    #checkoutForm="ngForm"
-    (ngSubmit)="procesarVenta()"
-    class="checkout-form"
-  >
-    <!-- Método de pago -->
-    <div class="form-group">
-      <label>Método de pago *</label>
-      <div class="payment-methods">
-        <button
-          type="button"
-          class="payment-method"
-          [class.selected]="metodoPago === 'efectivo'"
-          (click)="metodoPago = 'efectivo'"
+        <div class="summary-total">
+          <span class="total-label">Total:</span>
+          <span class="total-amount">${{ total }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Formulario de checkout -->
+    <form
+      *ngIf="items.length > 0"
+      #checkoutForm="ngForm"
+      (ngSubmit)="procesarVenta()"
+      class="checkout-form"
+    >
+      <!-- Método de pago -->
+      <div class="form-section">
+        <label class="section-label">Método de pago *</label>
+        <mat-button-toggle-group
+          [(ngModel)]="metodoPago"
+          name="metodoPago"
+          class="payment-toggle"
+          aria-label="Método de pago"
         >
-          💵 Efectivo
+          <mat-button-toggle value="efectivo">
+            <mat-icon>payments</mat-icon>
+            Efect
+          </mat-button-toggle>
+          <mat-button-toggle value="tarjeta">
+            <mat-icon>credit_card</mat-icon>
+            Tarj
+          </mat-button-toggle>
+          <mat-button-toggle value="transferencia">
+            <mat-icon>smartphone</mat-icon>
+            Transf
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      <!-- Si es efectivo, mostrar cambio -->
+      <div *ngIf="metodoPago === 'efectivo'" class="form-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Monto con el que paga</mat-label>
+          <span matTextPrefix>$ &nbsp;</span>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="montoPago"
+            name="montoPago"
+            [min]="total"
+            step="0.01"
+            required
+          />
+          <mat-error *ngIf="montoPago < total">
+            El monto debe ser mayor o igual al total
+          </mat-error>
+        </mat-form-field>
+
+        <div *ngIf="montoPago >= total" class="cambio-info">
+          <mat-icon>currency_exchange</mat-icon>
+          <span>Cambio: ${{ (montoPago - total).toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <!-- Nota opcional -->
+      <div class="form-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nota (opcional)</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="nota"
+            name="nota"
+            rows="2"
+            placeholder="Observaciones de la venta..."
+          ></textarea>
+          <mat-icon matSuffix>note</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Botones -->
+      <div class="form-actions">
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="cancelar()"
+          class="btn-cancelar"
+        >
+          <mat-icon>close</mat-icon>
+          Cancelar
         </button>
         <button
-          type="button"
-          class="payment-method"
-          [class.selected]="metodoPago === 'tarjeta'"
-          (click)="metodoPago = 'tarjeta'"
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!puedeProcesar() || procesando"
+          class="btn-procesar"
         >
-          💳 Tarjeta
-        </button>
-        <button
-          type="button"
-          class="payment-method"
-          [class.selected]="metodoPago === 'transferencia'"
-          (click)="metodoPago = 'transferencia'"
-        >
-          📱 Transferencia
+          <mat-icon *ngIf="!procesando">check_circle</mat-icon>
+          <mat-spinner
+            *ngIf="procesando"
+            diameter="20"
+            class="btn-spinner"
+          ></mat-spinner>
+          {{ procesando ? "Procesando..." : "Confirmar Venta" }}
         </button>
       </div>
+    </form>
+
+    <!-- Estado vacío -->
+    <div *ngIf="items.length === 0" class="empty-checkout">
+      <mat-icon class="empty-icon">shopping_cart</mat-icon>
+      <p>Agrega productos al carrito</p>
+      <small>para finalizar la venta</small>
     </div>
 
-    <!-- Si es efectivo, mostrar cambio -->
-    <div *ngIf="metodoPago === 'efectivo'" class="form-group">
-      <label for="montoPago">Monto con el que paga *</label>
-      <input
-        type="number"
-        id="montoPago"
-        [(ngModel)]="montoPago"
-        name="montoPago"
-        class="form-input"
-        [class.invalid]="montoPago < total"
-        min="0"
-        step="0.01"
-        required
-      />
-      <div *ngIf="montoPago >= total" class="cambio">
-        Cambio: ${{ (montoPago - total).toFixed(2) }}
-      </div>
-      <div *ngIf="montoPago < total && montoPago > 0" class="error-message">
-        El monto debe ser mayor o igual al total
-      </div>
+    <!-- Mensaje de éxito/error -->
+    <div
+      *ngIf="mensaje"
+      class="mensaje"
+      [class.success]="mensajeExito"
+      [class.error]="!mensajeExito"
+    >
+      <mat-icon>{{ mensajeExito ? "check_circle" : "error" }}</mat-icon>
+      <span>{{ mensaje }}</span>
     </div>
-
-    <!-- Nota opcional -->
-    <div class="form-group">
-      <label for="nota">Nota (opcional)</label>
-      <textarea
-        id="nota"
-        [(ngModel)]="nota"
-        name="nota"
-        class="form-input"
-        rows="2"
-        placeholder="Observaciones de la venta..."
-      ></textarea>
-    </div>
-
-    <!-- Botones -->
-    <div class="form-actions">
-      <button type="button" class="btn-cancelar" (click)="cancelar()">
-        Cancelar
-      </button>
-      <button type="submit" class="btn-procesar" [disabled]="!puedeProcesar()">
-        {{ procesando ? "Procesando..." : "Confirmar Venta" }}
-      </button>
-    </div>
-  </form>
-
-  <!-- Estado vacío -->
-  <div *ngIf="items.length === 0" class="empty-checkout">
-    <p>🛒 Agrega productos al carrito para finalizar la venta</p>
-  </div>
-
-  <!-- Mensaje de éxito/error -->
-  <div
-    *ngIf="mensaje"
-    class="mensaje"
-    [class.success]="mensajeExito"
-    [class.error]="!mensajeExito"
-  >
-    {{ mensaje }}
-  </div>
-</div>
+  </mat-card-content>
+</mat-card>

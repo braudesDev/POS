@@ -28,3 +28,19 @@ body {
 .error-snackbar .mat-simple-snackbar-action {
   color: currentColor;
 }
+
+/* Transiciones suaves para cambio de tema */
+* {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Optimizar para dispositivos que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

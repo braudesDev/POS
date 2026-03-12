@@ -1,0 +1,138 @@
+.nav-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--mat-sys-level2);
+}
+
+.app-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.sidenav-container {
+  height: calc(100vh - 64px); /* Resta la altura del toolbar */
+}
+
+.sidenav {
+  width: 280px;
+  background: var(--mat-sys-surface);
+}
+
+.sidenav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+}
+
+.sidenav-header span {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.mat-nav-list {
+  padding-top: 0.5rem;
+}
+
+.mat-list-item {
+  color: var(--mat-sys-on-surface);
+}
+
+.mat-list-item:hover {
+  background: var(--mat-sys-surface-container-low);
+}
+
+.mat-list-item.active {
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.mat-list-item.active mat-icon {
+  color: var(--mat-sys-primary);
+}
+
+.content-wrapper {
+  padding: 1rem;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--mat-sys-on-surface-variant);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.breadcrumbs a {
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs mat-icon {
+  font-size: 1.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  color: var(--mat-sys-outline);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .sidenav {
+    width: 240px;
+  }
+
+  .app-title {
+    font-size: 1rem;
+  }
+}
+
+/* Eliminar scroll del contenedor principal del sidenav */
+.mat-sidenav-content {
+  overflow: hidden !important; /* ← ESTO ES CLAVE */
+  height: 100vh;
+}
+
+.content-wrapper {
+  height: 100%;
+  overflow-y: auto; /* ← ÚNICO SCROLL PERMITIDO */
+  padding: 1rem;
+}
+
+/* Los componentes hijos NO deben tener scroll */
+.content-wrapper > * {
+  height: 100%;
+  overflow-y: auto; /* Heredan el scroll del wrapper */
+}
+
+/* Ajustes específicos para cada componente */
+.pos-grid,
+.dashboard-content,
+.content-container,
+.container {
+  height: 100% !important;
+  overflow-y: auto !important;
+  padding: 1rem;
+}
+
+/* Eliminar scroll de contenedores internos */
+.mat-sidenav-container {
+  height: calc(100vh - 64px); /* Resta altura del toolbar */
+  overflow: hidden;
+}

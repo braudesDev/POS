@@ -1,183 +1,228 @@
 .cart-container {
-  background: white;
-  border-radius: var(--mat-sys-corner-large);
-  box-shadow: var(--mat-sys-level2);
-  padding: 1rem;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+  margin: 1rem;
 }
 
-.cart-header {
+mat-card-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--mat-sys-outline-variant);
 }
 
-.cart-header h3 {
-  margin: 0;
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font: var(--mat-sys-title-medium);
   color: var(--mat-sys-on-surface);
-  font-size: 1.2rem;
 }
 
-.badge {
-  background: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
+/* Forzar la visualización del badge */
+.mat-badge-content {
+  background: red !important;
+  color: white !important;
+  font-size: 12px !important;
+  width: 20px !important;
+  height: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: absolute !important;
+  right: -5px !important;
+  top: -5px !important;
+  z-index: 9999 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .empty-cart {
   text-align: center;
   padding: 2rem 1rem;
-  color: var(--mat-sys-on-surface-variant);
+  color: var(--mat-sys-outline);
 }
 
 .empty-icon {
   font-size: 3rem;
-  display: block;
-  margin-bottom: 0.5rem;
-  opacity: 0.6;
+  width: 3rem;
+  height: 3rem;
   color: var(--mat-sys-primary);
+  opacity: 0.5;
+  margin-bottom: 1rem;
 }
 
-.empty-cart p {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.empty-cart small {
-  font-size: 0.85rem;
-  color: var(--mat-sys-outline);
-}
-
-.cart-item {
+.item-content {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  flex-direction: column;
+  width: 100%;
+  padding: 0.5rem 0;
 }
 
 .item-info {
-  flex: 2;
-  min-width: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
 }
 
 .item-name {
-  font-weight: 500;
-  font-size: 0.9rem;
+  font: var(--mat-sys-body-large);
   color: var(--mat-sys-on-surface);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .item-price {
-  font-size: 0.8rem;
+  font: var(--mat-sys-body-medium);
   color: var(--mat-sys-on-surface-variant);
 }
 
-.item-controls {
+.item-actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.btn-qty {
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--mat-sys-outline);
-  background: var(--mat-sys-surface-container-low);
-  border-radius: var(--mat-sys-corner-small);
-  cursor: pointer;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--mat-sys-on-surface);
-}
-
-.btn-qty:hover:not(:disabled) {
-  background: var(--mat-sys-surface-container);
-}
-
-.btn-qty:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .item-qty {
   min-width: 30px;
   text-align: center;
-  font-weight: 500;
+  font: var(--mat-sys-body-large);
   color: var(--mat-sys-on-surface);
 }
 
 .item-subtotal {
-  min-width: 70px;
+  min-width: 80px;
   text-align: right;
+  font: var(--mat-sys-label-large);
   font-weight: 600;
   color: var(--mat-sys-primary);
-}
-
-.btn-remove {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--mat-sys-corner-small);
-  color: var(--mat-sys-error);
-  opacity: 0.6;
-}
-
-.btn-remove:hover {
-  opacity: 1;
-  background: var(--mat-sys-error-container);
-  color: var(--mat-sys-on-error-container);
-}
-
-.remove-icon {
-  font-size: 1.2rem;
-  font-weight: bold;
+  margin-left: auto;
+  margin-right: 0.5rem;
 }
 
 .cart-footer {
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 2px solid var(--mat-sys-outline-variant);
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .cart-total {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
+  font: var(--mat-sys-title-large);
   color: var(--mat-sys-on-surface);
+  padding: 1rem 0;
 }
 
-.cart-total strong {
+.total-amount {
+  font: var(--mat-sys-headline-small);
   color: var(--mat-sys-primary);
-  font-size: 1.4rem;
 }
 
 .btn-clear {
   width: 100%;
-  padding: 0.75rem;
-  background: var(--mat-sys-surface-container-low);
-  border: 1px solid var(--mat-sys-outline);
-  border-radius: var(--mat-sys-corner-medium);
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: var(--mat-sys-on-surface);
 }
 
-.btn-clear:hover {
-  background: var(--mat-sys-surface-container);
+/* CORRECCIÓN PARA LA ALTURA DE LOS ITEMS */
+.mat-mdc-list-item {
+  height: auto !important; /* Elimina la altura fija */
+  min-height: 80px; /* Altura mínima para consistencia */
+  margin-bottom: 0.5rem; /* Espacio entre items */
+}
+
+.mat-mdc-list-item .mdc-list-item__content {
+  height: auto !important; /* Permite que el contenido crezca */
+  padding: 0.5rem 0; /* Espaciado vertical */
+}
+
+/* Opcional: Si quieres que el nombre no se corte */
+.item-name {
+  font: var(--mat-sys-body-large);
+  color: var(--mat-sys-on-surface);
+  white-space: normal; /* Permite saltos de línea */
+  word-break: break-word; /* Rompe palabras largas */
+  line-height: 1.4; /* Mejor espaciado entre líneas */
+}
+
+/* CONTENEDOR DEL BADGE - ESTO ES CRÍTICO */
+.mat-badge {
+  position: relative !important;
+}
+
+/* El botón debe tener posición relativa también */
+button[mat-icon-button] {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+/* Forzar la visualización del badge con la posición correcta */
+.mat-badge-content {
+  background: var(--mat-sys-primary) !important;
+  color: var(--mat-sys-on-primary) !important;
+  font-size: 12px !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  line-height: 20px !important;
+  border-radius: 10px !important;
+  position: absolute !important;
+  right: -5px !important;
+  top: -5px !important;
+  z-index: 1000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  pointer-events: none !important;
+}
+
+/* CONTENEDOR DEL BADGE PERSONALIZADO */
+.custom-badge-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1rem; /* ← SEPARACIÓN DEL TÍTULO */
+  padding: 0.25rem;
+}
+
+.cart-icon {
+  color: var(--mat-sys-primary);
+  font-size: 28px; /* ← UN POCO MÁS GRANDE */
+  width: 28px;
+  height: 28px;
+}
+
+.custom-badge {
+  position: absolute;
+  top: -5px; /* ← AJUSTADO */
+  right: -5px; /* ← AJUSTADO */
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-shadow: var(--mat-sys-level2);
+  animation: badgePop 0.3s ease;
+  border: 2px solid var(--mat-sys-surface); /* ← BORDE PARA DESTACAR */
+}
+
+@keyframes badgePop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* OPCIONAL: Si quieres que el icono del título y el badge estén alineados */
+mat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
 }
