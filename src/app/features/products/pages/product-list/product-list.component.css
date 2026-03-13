@@ -2,6 +2,29 @@
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  height: 100%;
+  overflow-y: auto;
+  /* Mejoras para scroll */
+  scrollbar-gutter: stable;
+}
+
+/* Personalizar scrollbar */
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 4px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: var(--mat-sys-primary);
+  border-radius: 4px;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: var(--mat-sys-primary-container);
 }
 
 .header {
@@ -9,6 +32,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  flex-shrink: 0;
 }
 
 h1 {
@@ -22,6 +46,8 @@ h1 {
   background: var(--mat-sys-surface);
   border-radius: var(--mat-sys-corner-medium);
   overflow: hidden;
+  /* Para que el scroll no afecte la tabla */
+  overflow-x: auto;
 }
 
 table {
@@ -103,6 +129,7 @@ table {
   color: var(--mat-sys-on-error-container);
   border-radius: var(--mat-sys-corner-small);
   margin-bottom: 1rem;
+  flex-shrink: 0;
 }
 
 .error-container mat-icon {
@@ -128,4 +155,198 @@ table {
 
 mat-paginator {
   border-top: 1px solid var(--mat-sys-outline-variant);
+  flex-shrink: 0;
+}
+
+/* ========== MEDIA QUERIES ========== */
+
+/* Tablets y móviles grandes */
+@media (max-width: 1024px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header button {
+    width: 100%;
+  }
+
+  /* Ajustar tabla para que sea responsiva */
+  .table-container {
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 800px; /* Forzar scroll horizontal si es necesario */
+  }
+}
+
+/* Móviles medianos */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .loading-spinner {
+    padding: 2rem;
+  }
+
+  .empty-state {
+    padding: 2rem !important;
+  }
+
+  .empty-state mat-icon {
+    font-size: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  /* Ocultar columnas menos importantes en móvil */
+  .mat-column-codigo,
+  .mat-column-categoria {
+    display: none;
+  }
+
+  .product-image {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem;
+  }
+
+  .header {
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: 1.3rem;
+  }
+
+  .error-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .error-container button {
+    width: 100%;
+  }
+
+  /* Ocultar más columnas en móvil pequeño */
+  .mat-column-precio,
+  .mat-column-stock {
+    display: none;
+  }
+
+  .product-image {
+    width: 35px;
+    height: 35px;
+  }
+
+  .no-image-icon {
+    font-size: 1.5rem;
+    width: 35px;
+    height: 35px;
+  }
+
+  .empty-state mat-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .empty-state p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Pantallas muy pequeñas (menos de 360px) */
+@media (max-width: 360px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+  }
+
+  /* Solo mostrar nombre y acciones */
+  .mat-column-imagen {
+    display: none;
+  }
+
+  .mat-column-nombre {
+    max-width: 150px;
+  }
+
+  /* Ajustar botones */
+  .mat-mdc-icon-button {
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+  }
+
+  .mat-mdc-icon-button .mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Pantallas grandes */
+@media (min-width: 1367px) {
+  .container {
+    max-width: 1600px;
+    padding: 2.5rem;
+  }
+
+  .product-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .no-image-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+  }
+
+  table {
+    font-size: 1.1rem;
+  }
+}
+
+/* Ultra-wide */
+@media (min-width: 1921px) {
+  .container {
+    max-width: 2000px;
+    padding: 3rem;
+  }
+
+  .product-image {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* Ajustes de accesibilidad para reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
 }

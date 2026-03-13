@@ -4,11 +4,11 @@
   flex-direction: column;
   background: var(--mat-sys-surface-container-low);
   transition: background-color 0.3s ease;
-  overflow: hidden; /* Necesario para evitar doble scroll */
+  overflow: hidden;
 }
 
 .pos-header {
-  flex-shrink: 0; /* No se encoge */
+  flex-shrink: 0;
   background: var(--mat-sys-surface);
   padding: 1rem 2rem;
   display: flex;
@@ -18,47 +18,56 @@
   border-bottom: 1px solid var(--mat-sys-outline-variant);
 }
 
+.pos-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--mat-sys-on-surface);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .pos-grid {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 350px;
   gap: 1rem;
   padding: 1rem;
-  min-height: 0; /* CRÍTICO: Permite que los hijos se encojan correctamente */
-  overflow: hidden; /* Evita scroll en el grid */
+  min-height: 0;
+  overflow: hidden;
 }
 
 .left-panel {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  min-height: 0; /* CRÍTICO */
-  overflow-y: auto; /* Scroll aquí */
+  min-height: 0;
+  overflow-y: auto;
 
   /* MEJORAS PARA LA BARRA DE SCROLL */
-  scrollbar-gutter: stable; /* Reserva espacio para la barra */
-  padding-right: 8px; /* Espacio adicional para la barra */
-
-  /* Scrollbar personalizada - MÁS ANCHA */
-  scrollbar-width: auto; /* En Firefox, auto es más ancho que thin */
+  scrollbar-gutter: stable;
+  padding-right: 8px;
+  scrollbar-width: auto;
 }
 
-/* Personalización para Chrome/Edge/Safari */
 .left-panel::-webkit-scrollbar {
-  width: 10px; /* Más ancha para que se vea completa */
+  width: 10px;
 }
 
 .left-panel::-webkit-scrollbar-track {
   background: var(--mat-sys-surface-container-low);
   border-radius: 5px;
-  margin: 2px; /* Pequeño margen para que no se pegue a los bordes */
+  margin: 2px;
 }
 
 .left-panel::-webkit-scrollbar-thumb {
   background: var(--mat-sys-primary);
   border-radius: 5px;
-  border: 2px solid transparent; /* Crea un efecto de padding interno */
-  background-clip: padding-box; /* Hace que el borde sea transparente */
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 .left-panel::-webkit-scrollbar-thumb:hover {
@@ -67,11 +76,10 @@
   background-clip: padding-box;
 }
 
-/* Espacio al final del scroll para que se vea completo */
 .left-panel::after {
   content: "";
   display: block;
-  height: 8px; /* Espacio adicional al final */
+  height: 8px;
   width: 100%;
   flex-shrink: 0;
 }
@@ -79,8 +87,6 @@
 .right-panel {
   overflow-y: auto;
   min-height: 0;
-
-  /* Mismas mejoras para el panel derecho */
   scrollbar-gutter: stable;
   padding-right: 8px;
   scrollbar-width: auto;
@@ -109,7 +115,15 @@
   background-clip: padding-box;
 }
 
-/* Los componentes hijos deben permitir que el scroll funcione */
+.right-panel::after {
+  content: "";
+  display: block;
+  height: 8px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* Los componentes hijos */
 app-scanner,
 app-cart,
 app-checkout {
@@ -117,13 +131,11 @@ app-checkout {
   width: 100%;
 }
 
-/* Para el carrito específicamente - asegurar que ocupe todo el ancho */
 app-cart {
   width: 100%;
-  overflow: visible; /* Importante para no crear otro scroll */
+  overflow: visible;
 }
 
-/* Resto de estilos se mantienen igual */
 .btn-reports,
 .btn-products {
   padding: 0.5rem 1rem;
@@ -134,6 +146,7 @@ app-cart {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  transition: all 0.2s ease;
 }
 
 .btn-reports {
@@ -166,23 +179,7 @@ app-cart {
   border: 1px solid var(--mat-sys-outline-variant);
 }
 
-@media (max-width: 768px) {
-  .pos-header {
-    padding: 1rem;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .pos-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .right-panel {
-    order: -1;
-    max-height: 300px;
-  }
-}
-
+/* Transiciones globales */
 * {
   transition:
     background-color 0.2s ease,
@@ -191,8 +188,256 @@ app-cart {
     box-shadow 0.2s ease;
 }
 
+/* ========== MEDIA QUERIES ========== */
+
+/* Tablets y móviles grandes (hasta 1024px) */
+@media (max-width: 1024px) {
+  .pos-grid {
+    grid-template-columns: 1fr 300px; /* Panel derecho más pequeño */
+  }
+}
+
+/* Móviles grandes y tablets pequeñas (hasta 768px) */
+@media (max-width: 768px) {
+  .pos-header {
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pos-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .pos-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .right-panel {
+    order: -1; /* Checkout arriba en móvil */
+    max-height: 300px;
+    min-height: 250px;
+  }
+
+  .left-panel {
+    max-height: calc(100vh - 350px); /* Ajuste para dar espacio al checkout */
+  }
+
+  .btn-reports,
+  .btn-products {
+    flex: 1;
+    justify-content: center;
+    min-height: 44px; /* Mejor para touch */
+  }
+}
+
+/* Móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+  .pos-header {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .pos-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .header-actions {
+    gap: 0.25rem;
+  }
+
+  .btn-reports,
+  .btn-products {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.8rem;
+    min-height: 40px;
+  }
+
+  .btn-reports mat-icon,
+  .btn-products mat-icon {
+    font-size: 1.1rem;
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .pos-grid {
+    padding: 0.25rem;
+    gap: 0.25rem;
+  }
+
+  .right-panel {
+    max-height: 250px;
+    min-height: 200px;
+  }
+
+  .left-panel {
+    max-height: calc(100vh - 300px);
+    gap: 0.5rem;
+  }
+
+  .checkout-placeholder {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Móviles muy pequeños (menos de 360px) */
+@media (max-width: 360px) {
+  .pos-header {
+    padding: 0.25rem 0.5rem;
+  }
+
+  .pos-header h1 {
+    font-size: 1rem;
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-reports,
+  .btn-products {
+    width: 100%;
+    margin: 0.1rem 0;
+  }
+
+  .right-panel {
+    max-height: 200px;
+    min-height: 150px;
+  }
+
+  .left-panel {
+    max-height: calc(100vh - 250px);
+  }
+}
+
+/* Ajustes para tablets en landscape */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+  .pos-grid {
+    grid-template-columns: 1fr 350px;
+  }
+
+  .right-panel {
+    order: 1;
+    max-height: none;
+  }
+
+  .left-panel {
+    max-height: none;
+  }
+}
+
+/* Pantallas grandes (1367px - 1920px) */
+@media (min-width: 1367px) and (max-width: 1920px) {
+  .pos-header {
+    padding: 1.25rem 2.5rem;
+  }
+
+  .pos-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .pos-grid {
+    grid-template-columns: 1fr 400px;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .btn-reports,
+  .btn-products {
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+  }
+
+  .btn-reports mat-icon,
+  .btn-products mat-icon {
+    font-size: 1.3rem;
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+}
+
+/* Ultra-wide (1921px+) */
+@media (min-width: 1921px) {
+  .pos-header {
+    padding: 1.5rem 3rem;
+  }
+
+  .pos-header h1 {
+    font-size: 2rem;
+  }
+
+  .pos-grid {
+    grid-template-columns: 1fr 500px;
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  .btn-reports,
+  .btn-products {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+  }
+
+  .btn-reports mat-icon,
+  .btn-products mat-icon {
+    font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .left-panel::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .right-panel::-webkit-scrollbar {
+    width: 12px;
+  }
+}
+
+/* Ajustes de altura para pantallas muy altas */
+@media (min-height: 1200px) {
+  .right-panel {
+    max-height: 400px;
+  }
+
+  .left-panel {
+    max-height: calc(100vh - 200px);
+  }
+}
+
+/* Ajustes de orientación para móviles en landscape */
+@media (max-height: 600px) and (orientation: landscape) {
+  .pos-header {
+    padding: 0.25rem 1rem;
+  }
+
+  .pos-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .right-panel {
+    max-height: 200px;
+  }
+
+  .left-panel {
+    max-height: calc(100vh - 150px);
+  }
+}
+
+/* Ajustes de accesibilidad para reducir movimiento */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  .pos-container,
+  .btn-reports,
+  .btn-products {
     transition: none !important;
   }
 }

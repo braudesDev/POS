@@ -17,7 +17,7 @@
 
 .dashboard-content {
   flex: 1;
-  min-height: 0; /* ← AÑADIR */
+  min-height: 0;
   overflow-y: auto;
   padding: 1.5rem;
   display: flex;
@@ -25,29 +25,27 @@
   gap: 1.5rem;
 
   /* MEJORAS PARA LA BARRA DE SCROLL */
-  scrollbar-gutter: stable; /* Reserva espacio para la barra */
-  padding-right: 12px; /* Espacio adicional para la barra */
-
-  /* Scrollbar personalizada - MÁS ANCHA */
-  scrollbar-width: auto; /* En Firefox, auto es más ancho que thin */
+  scrollbar-gutter: stable;
+  padding-right: 12px;
+  scrollbar-width: auto;
 }
 
 /* Personalización para Chrome/Edge/Safari */
 .dashboard-content::-webkit-scrollbar {
-  width: 10px; /* Más ancha que 8px */
+  width: 10px;
 }
 
 .dashboard-content::-webkit-scrollbar-track {
   background: var(--mat-sys-surface-container-low);
   border-radius: 5px;
-  margin: 2px; /* Pequeño margen para que no se pegue */
+  margin: 2px;
 }
 
 .dashboard-content::-webkit-scrollbar-thumb {
   background: var(--mat-sys-primary);
   border-radius: 5px;
-  border: 2px solid transparent; /* Crea un efecto de padding interno */
-  background-clip: padding-box; /* Hace que el borde sea transparente */
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 .dashboard-content::-webkit-scrollbar-thumb:hover {
@@ -56,11 +54,11 @@
   background-clip: padding-box;
 }
 
-/* Espacio al final del scroll para que se vea completo */
+/* Espacio al final del scroll */
 .dashboard-content::after {
   content: "";
   display: block;
-  height: 12px; /* Espacio adicional al final */
+  height: 12px;
   width: 100%;
   flex-shrink: 0;
 }
@@ -71,21 +69,19 @@
   max-height: none !important;
 }
 
-/* EXCEPCIÓN: Si quieres límite en las tarjetas de listas */
+/* EXCEPCIÓN: Scroll interno en tarjetas de listas */
 .products-card,
 .recent-sales-card {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  min-height: 0; /* Añadir para que el scroll interno funcione */
+  min-height: 0;
 }
 
 .products-card .mat-mdc-card-content,
 .recent-sales-card .mat-mdc-card-content {
   overflow-y: auto !important;
   max-height: 300px;
-
-  /* También mejorar el scroll interno de las tarjetas */
   scrollbar-gutter: stable;
   padding-right: 8px;
 }
@@ -295,10 +291,113 @@ mat-list-item {
   padding: 1rem;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
+/* ========== MEDIA QUERIES ========== */
+
+/* Móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+  .dashboard-toolbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .dashboard-toolbar span {
+    font-size: 1rem;
+  }
+
+  .dashboard-content {
+    padding: 0.75rem;
+    gap: 1rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .summary-card mat-card-content {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .card-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .card-icon mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .card-label {
+    font-size: 0.75rem;
+  }
+
+  .card-value {
+    font-size: 1.2rem;
+  }
+
+  .payment-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .payment-info {
+    min-width: auto;
+  }
+
+  .payment-bar-container {
+    width: 100%;
+  }
+
+  .payment-amount {
+    align-self: flex-end;
+  }
+
+  .products-card .mat-mdc-card-content,
+  .recent-sales-card .mat-mdc-card-content {
+    max-height: 250px;
+  }
+
+  mat-list-item {
+    height: auto !important;
+    min-height: 60px;
+  }
+
+  .product-rank {
+    font-size: 0.9rem;
+  }
+
+  .product-name {
+    font-size: 0.9rem;
+  }
+
+  .sale-time {
+    min-width: 60px;
+    font-size: 0.9rem;
+  }
+
+  .error-container {
+    margin: 1rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .error-container button {
+    width: 100%;
+  }
+}
+
+/* Móviles medianos (481px - 600px) */
+@media (min-width: 481px) and (max-width: 600px) {
   .dashboard-content {
     padding: 1rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .payment-item {
@@ -311,5 +410,113 @@ mat-list-item {
 
   .payment-amount {
     min-width: auto;
+  }
+}
+
+/* Tablets (601px - 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .dashboard-content {
+    padding: 1.25rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .payment-item {
+    gap: 0.75rem;
+  }
+}
+
+/* Pantallas grandes (1367px - 1920px) */
+@media (min-width: 1367px) and (max-width: 1920px) {
+  .dashboard-content {
+    padding: 2rem;
+    gap: 2rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .summary-card mat-card-content {
+    padding: 2rem;
+  }
+
+  .card-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .card-icon mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .card-value {
+    font-size: var(--mat-sys-headline-medium);
+  }
+
+  .products-card .mat-mdc-card-content,
+  .recent-sales-card .mat-mdc-card-content {
+    max-height: 350px;
+  }
+}
+
+/* Ultra-wide (1921px+) */
+@media (min-width: 1921px) {
+  .dashboard-content {
+    padding: 2.5rem;
+    gap: 2.5rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .summary-card mat-card-content {
+    padding: 2.5rem;
+  }
+
+  .card-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .card-icon mat-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .card-value {
+    font-size: var(--mat-sys-headline-large);
+  }
+
+  .products-card .mat-mdc-card-content,
+  .recent-sales-card .mat-mdc-card-content {
+    max-height: 400px;
+  }
+}
+
+/* Ajustes de orientación para tablets en landscape */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+  .cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .products-card,
+  .recent-sales-card {
+    max-width: 50%;
+  }
+}
+
+/* Ajustes de accesibilidad para reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .payment-bar,
+  * {
+    transition: none !important;
   }
 }

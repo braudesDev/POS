@@ -2,8 +2,29 @@
   padding: 2rem;
   max-width: 800px;
   margin: 0 auto;
-  height: 100%; /* ← OPCIONAL: si quieres que ocupe toda la altura */
-  overflow-y: auto; /* ← OPCIONAL: si quieres scroll cuando sea necesario */
+  height: 100%;
+  overflow-y: auto;
+  /* IMPORTANTE: espacio para el scroll */
+  scrollbar-gutter: stable;
+}
+
+/* Personalizar scrollbar para mejor experiencia */
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 4px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: var(--mat-sys-primary);
+  border-radius: 4px;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: var(--mat-sys-primary-container);
 }
 
 .header {
@@ -11,7 +32,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  flex-shrink: 0; /* ← OPCIONAL */
+  flex-shrink: 0;
 }
 
 h1 {
@@ -40,7 +61,7 @@ h1 {
   color: var(--mat-sys-on-error-container);
   border-radius: var(--mat-sys-corner-small);
   margin-bottom: 1rem;
-  flex-shrink: 0; /* ← OPCIONAL */
+  flex-shrink: 0;
 }
 
 .product-form {
@@ -48,8 +69,10 @@ h1 {
   flex-direction: column;
   gap: 1rem;
   padding: 1rem 0;
-  flex: 1; /* ← OPCIONAL */
-  min-height: 0; /* ← OPCIONAL */
+  flex: 1;
+  min-height: 0;
+  /* Asegura que el formulario pueda crecer */
+  height: auto;
 }
 
 .form-row {
@@ -141,16 +164,221 @@ h1 {
   gap: 1rem;
   justify-content: flex-end;
   margin-top: 1rem;
-  flex-shrink: 0; /* ← OPCIONAL */
+  flex-shrink: 0;
+  /* IMPORTANTE: padding inferior para que el botón no quede pegado */
+  padding-bottom: 2rem;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .grid-2 {
-    grid-template-columns: 1fr;
+/* ========== MEDIA QUERIES ========== */
+
+/* Tablets y móviles grandes */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem;
+    /* Scroll mejorado */
+    scrollbar-width: thin;
   }
 
+  .grid-2 {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .header button {
+    width: 100%;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    /* Más espacio inferior en móviles */
+    padding-bottom: 3rem;
+  }
+
+  .form-actions button {
+    width: 100%;
+    /* Asegurar altura mínima para touch */
+    min-height: 48px;
+  }
+
+  .file-upload-area {
+    min-height: 120px;
+  }
+
+  .upload-placeholder {
+    padding: 1.5rem;
+  }
+
+  .upload-placeholder mat-icon {
+    font-size: 2rem;
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
   .container {
     padding: 1rem;
+    /* Espacio para scroll más pequeño */
+    scrollbar-width: thin;
+  }
+
+  /* Indicador visual de que hay más contenido */
+  .container::after {
+    content: "";
+    display: block;
+    height: 20px;
+    width: 100%;
+    pointer-events: none;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .header {
+    margin-bottom: 1rem;
+  }
+
+  .product-form {
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+  }
+
+  .error-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .error-container button {
+    width: 100%;
+  }
+
+  .file-upload-section {
+    margin: 0.5rem 0;
+  }
+
+  .file-upload-label {
+    font-size: 0.9rem;
+  }
+
+  .file-upload-area {
+    min-height: 100px;
+  }
+
+  .upload-placeholder {
+    padding: 1rem;
+    gap: 0.25rem;
+  }
+
+  .upload-placeholder mat-icon {
+    font-size: 1.8rem;
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  .file-hint {
+    font-size: 0.75rem;
+  }
+
+  .image-preview {
+    max-width: 150px;
+    max-height: 150px;
+  }
+
+  .image-preview-container {
+    padding: 0.5rem;
+  }
+
+  .loading-spinner {
+    padding: 2rem;
+  }
+
+  .loading-spinner p {
+    font-size: 0.9rem;
+  }
+
+  .form-actions {
+    /* Botón flotante en móvil? no, mejor aseguramos scroll */
+    padding-bottom: 4rem;
+  }
+}
+
+/* Pantallas muy pequeñas (menos de 360px) */
+@media (max-width: 360px) {
+  .container {
+    padding: 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.3rem;
+  }
+
+  .upload-placeholder span:not(.file-hint) {
+    font-size: 0.9rem;
+  }
+
+  .image-preview {
+    max-width: 120px;
+    max-height: 120px;
+  }
+
+  .form-actions {
+    padding-bottom: 5rem;
+  }
+}
+
+/* Ajustes para tablets en modo landscape */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+  .container {
+    max-width: 90%;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .form-actions {
+    padding-bottom: 2rem;
+  }
+}
+
+/* Pantallas grandes */
+@media (min-width: 1367px) {
+  .container {
+    max-width: 1000px;
+  }
+
+  .file-upload-area {
+    min-height: 180px;
+  }
+
+  .upload-placeholder mat-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* Ajustes de accesibilidad para reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .file-upload-area,
+  .file-upload-area * {
+    transition: none !important;
   }
 }

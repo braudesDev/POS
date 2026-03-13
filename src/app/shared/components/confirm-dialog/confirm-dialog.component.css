@@ -1,8 +1,161 @@
+/* Estilos base */
 mat-dialog-content {
   min-width: 300px;
   padding: 20px 0;
 }
+
 p {
   margin: 0;
   color: var(--mat-sys-on-surface);
+}
+
+/* ========== MEDIA QUERIES ========== */
+
+/* Móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+  mat-dialog-content {
+    min-width: 250px; /* Reducir ancho mínimo */
+    padding: 16px 0;
+  }
+
+  p {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  /* Ajustes para los botones del diálogo (si los hubiera en el HTML) */
+  mat-dialog-actions {
+    padding: 8px 16px !important;
+    gap: 8px !important;
+  }
+
+  mat-dialog-actions button {
+    min-height: 44px; /* Mejor para touch */
+    font-size: 0.9rem;
+    padding: 0 16px;
+  }
+
+  mat-dialog-actions button mat-icon {
+    font-size: 1.2rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-right: 4px;
+  }
+}
+
+/* Móviles muy pequeños (menos de 360px) */
+@media (max-width: 360px) {
+  mat-dialog-content {
+    min-width: 220px; /* Aún más pequeño */
+    padding: 12px 0;
+  }
+
+  p {
+    font-size: 0.85rem;
+  }
+
+  mat-dialog-actions {
+    flex-direction: column; /* Botones verticales */
+    gap: 4px !important;
+  }
+
+  mat-dialog-actions button {
+    width: 100%;
+    margin: 2px 0 !important;
+    justify-content: center;
+  }
+}
+
+/* Móviles medianos (481px - 600px) */
+@media (min-width: 481px) and (max-width: 600px) {
+  mat-dialog-content {
+    min-width: 280px;
+    padding: 18px 0;
+  }
+}
+
+/* Tablets (601px - 768px) */
+@media (min-width: 601px) and (max-width: 768px) {
+  mat-dialog-content {
+    min-width: 350px; /* Un poco más ancho */
+    padding: 20px 0;
+  }
+}
+
+/* Tablets grandes y laptops pequeñas (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  mat-dialog-content {
+    min-width: 400px;
+  }
+}
+
+/* Pantallas grandes (1367px - 1920px) */
+@media (min-width: 1367px) and (max-width: 1920px) {
+  mat-dialog-content {
+    min-width: 450px;
+    padding: 24px 0;
+  }
+
+  p {
+    font-size: 1.1rem;
+  }
+
+  mat-dialog-actions button {
+    font-size: 1rem;
+    padding: 0 20px;
+  }
+}
+
+/* Ultra-wide (1921px+) */
+@media (min-width: 1921px) {
+  mat-dialog-content {
+    min-width: 500px;
+    padding: 28px 0;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+
+  mat-dialog-actions button {
+    font-size: 1.1rem;
+    padding: 0 24px;
+    min-height: 48px;
+  }
+
+  mat-dialog-actions button mat-icon {
+    font-size: 1.4rem;
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+}
+
+/* Ajustes de orientación para móviles en landscape */
+@media (max-height: 500px) and (orientation: landscape) {
+  mat-dialog-content {
+    padding: 12px 0;
+  }
+
+  mat-dialog-actions {
+    padding: 4px 16px !important;
+  }
+}
+
+/* Ajustes de accesibilidad para alto contraste (opcional) */
+@media (prefers-contrast: high) {
+  mat-dialog-content {
+    border: 2px solid var(--mat-sys-outline);
+  }
+
+  p {
+    font-weight: 500;
+  }
+}
+
+/* Ajustes de accesibilidad para reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+  mat-dialog-content,
+  mat-dialog-actions button {
+    transition: none !important;
+  }
 }

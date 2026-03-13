@@ -1,43 +1,482 @@
-.theme-toggle-container {
-  display: inline-block;
-  margin: 0 0.5rem;
+.nav-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--mat-sys-level2);
+  padding: 0 1rem;
+  min-height: 64px;
 }
 
-.theme-button {
-  transition: transform 0.2s ease;
+.app-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.theme-button:hover {
-  transform: rotate(15deg);
+.toolbar-spacer {
+  flex: 1 1 auto;
 }
 
-.theme-menu .mat-mdc-menu-item {
+.sidenav-container {
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+.sidenav {
+  width: 280px;
+  background: var(--mat-sys-surface);
+  border-right: 1px solid var(--mat-sys-outline-variant);
+}
+
+.sidenav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  padding: 0 1rem;
+  min-height: 64px;
+}
+
+.sidenav-header span {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.mat-nav-list {
+  padding-top: 0.5rem;
+}
+
+.mat-list-item {
+  color: var(--mat-sys-on-surface);
+  height: 56px !important;
+  margin: 4px 8px;
+  border-radius: var(--mat-sys-corner-medium);
+}
+
+.mat-list-item:hover {
+  background: var(--mat-sys-surface-container-low);
+}
+
+.mat-list-item.active {
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+.mat-list-item.active mat-icon {
+  color: var(--mat-sys-primary);
+}
+
+.mat-list-item mat-icon {
+  margin-right: 0.5rem;
+}
+
+.mat-divider {
+  margin: 8px 0;
+}
+
+.mat-sidenav-content {
+  overflow: hidden !important;
+  height: 100%;
+}
+
+.content-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+
+  /* Scrollbar personalizada */
+  scrollbar-width: thin;
+  scrollbar-color: var(--mat-sys-primary) var(--mat-sys-surface-container-low);
+}
+
+.content-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content-wrapper::-webkit-scrollbar-track {
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 4px;
+}
+
+.content-wrapper::-webkit-scrollbar-thumb {
+  background: var(--mat-sys-primary);
+  border-radius: 4px;
+}
+
+.content-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--mat-sys-primary-container);
+}
+
+/* Espacio al final del scroll */
+.content-wrapper::after {
+  content: "";
+  display: block;
+  height: 12px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.breadcrumbs {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  min-width: 180px;
+  gap: 0.25rem;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--mat-sys-on-surface-variant);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  flex-wrap: wrap; /* Permite que los breadcrumbs se envuelvan */
 }
 
-.check-icon {
-  margin-left: auto;
+.breadcrumbs a {
   color: var(--mat-sys-primary);
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs mat-icon {
   font-size: 1.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  color: var(--mat-sys-outline);
 }
 
-/* Animación para el icono cuando cambia */
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
+/* Los componentes hijos */
+.content-wrapper > * {
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Ajustes específicos para cada componente */
+.pos-grid,
+.dashboard-content,
+.content-container,
+.container {
+  height: 100% !important;
+  overflow-y: auto !important;
+  padding: 1rem;
+}
+
+/* ========== MEDIA QUERIES ========== */
+
+/* Tablets y móviles grandes (hasta 1024px) */
+@media (max-width: 1024px) {
+  .sidenav {
+    width: 260px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .app-title {
+    font-size: 1.1rem;
+  }
+
+  .breadcrumbs {
+    font-size: 0.85rem;
   }
 }
 
-.theme-button mat-icon {
-  transition: all 0.3s ease;
+/* Móviles grandes y tablets pequeñas (hasta 768px) */
+@media (max-width: 768px) {
+  .nav-toolbar {
+    padding: 0 0.75rem;
+    min-height: 60px;
+  }
+
+  .app-title {
+    font-size: 1rem;
+    max-width: 150px;
+  }
+
+  .sidenav {
+    width: 240px;
+  }
+
+  .sidenav-header {
+    min-height: 60px;
+  }
+
+  .sidenav-header span {
+    font-size: 1rem;
+  }
+
+  .mat-list-item {
+    height: 52px !important;
+    margin: 2px 6px;
+  }
+
+  .breadcrumbs {
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .content-wrapper {
+    padding: 0.75rem;
+  }
 }
 
-.theme-button:active mat-icon {
-  animation: spin 0.5s ease;
+/* Móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+  .nav-toolbar {
+    padding: 0 0.5rem;
+    min-height: 56px;
+  }
+
+  .app-title {
+    font-size: 0.9rem;
+    max-width: 120px;
+  }
+
+  .sidenav {
+    width: 220px;
+  }
+
+  .sidenav-header {
+    min-height: 56px;
+    padding: 0 0.75rem;
+  }
+
+  .sidenav-header span {
+    font-size: 0.95rem;
+  }
+
+  .mat-list-item {
+    height: 48px !important;
+    margin: 2px 4px;
+    font-size: 0.9rem;
+  }
+
+  .mat-list-item mat-icon {
+    font-size: 1.2rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-right: 0.35rem;
+  }
+
+  .breadcrumbs {
+    font-size: 0.75rem;
+    gap: 0.15rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .breadcrumbs mat-icon {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .content-wrapper {
+    padding: 0.5rem;
+  }
+}
+
+/* Móviles muy pequeños (menos de 360px) */
+@media (max-width: 360px) {
+  .nav-toolbar {
+    padding: 0 0.25rem;
+    min-height: 52px;
+  }
+
+  .app-title {
+    display: none; /* Ocultar título en pantallas muy pequeñas */
+  }
+
+  .sidenav {
+    width: 200px;
+  }
+
+  .sidenav-header span {
+    font-size: 0.9rem;
+  }
+
+  .mat-list-item {
+    height: 44px !important;
+    font-size: 0.85rem;
+    margin: 1px 2px;
+  }
+
+  .mat-list-item mat-icon {
+    font-size: 1.1rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-right: 0.25rem;
+  }
+
+  .breadcrumbs {
+    font-size: 0.7rem;
+    flex-wrap: wrap;
+  }
+}
+
+/* Pantallas grandes (1367px - 1920px) */
+@media (min-width: 1367px) and (max-width: 1920px) {
+  .nav-toolbar {
+    min-height: 72px;
+    padding: 0 1.5rem;
+  }
+
+  .app-title {
+    font-size: 1.3rem;
+    margin-left: 0.75rem;
+  }
+
+  .sidenav {
+    width: 300px;
+  }
+
+  .sidenav-header {
+    min-height: 72px;
+  }
+
+  .sidenav-header span {
+    font-size: 1.2rem;
+  }
+
+  .mat-list-item {
+    height: 60px !important;
+    margin: 6px 12px;
+    font-size: 1rem;
+  }
+
+  .mat-list-item mat-icon {
+    font-size: 1.4rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    margin-right: 0.75rem;
+  }
+
+  .content-wrapper {
+    padding: 1.5rem;
+  }
+
+  .breadcrumbs {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumbs mat-icon {
+    font-size: 1.4rem;
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .sidenav-container {
+    height: calc(100vh - 72px);
+  }
+}
+
+/* Ultra-wide (1921px+) */
+@media (min-width: 1921px) {
+  .nav-toolbar {
+    min-height: 80px;
+    padding: 0 2rem;
+  }
+
+  .app-title {
+    font-size: 1.5rem;
+    margin-left: 1rem;
+  }
+
+  .sidenav {
+    width: 350px;
+  }
+
+  .sidenav-header {
+    min-height: 80px;
+  }
+
+  .sidenav-header span {
+    font-size: 1.4rem;
+  }
+
+  .mat-list-item {
+    height: 64px !important;
+    margin: 8px 16px;
+    font-size: 1.1rem;
+  }
+
+  .mat-list-item mat-icon {
+    font-size: 1.6rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-right: 1rem;
+  }
+
+  .mat-divider {
+    margin: 12px 0;
+  }
+
+  .content-wrapper {
+    padding: 2rem;
+  }
+
+  .breadcrumbs {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    gap: 0.5rem;
+  }
+
+  .breadcrumbs mat-icon {
+    font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .sidenav-container {
+    height: calc(100vh - 80px);
+  }
+}
+
+/* Ajustes de orientación para móviles en landscape */
+@media (max-height: 600px) and (orientation: landscape) {
+  .nav-toolbar {
+    min-height: 48px;
+  }
+
+  .sidenav-container {
+    height: calc(100vh - 48px);
+  }
+
+  .sidenav-header {
+    min-height: 48px;
+  }
+
+  .mat-list-item {
+    height: 40px !important;
+  }
+
+  .content-wrapper {
+    padding: 0.5rem;
+  }
+}
+
+/* Ajustes de accesibilidad para alto contraste */
+@media (prefers-contrast: high) {
+  .sidenav {
+    border-right: 2px solid var(--mat-sys-outline);
+  }
+
+  .mat-list-item.active {
+    border: 2px solid var(--mat-sys-primary);
+  }
+
+  .breadcrumbs a {
+    text-decoration: underline;
+  }
+}
+
+/* Ajustes de accesibilidad para reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .mat-list-item,
+  .sidenav,
+  .nav-toolbar {
+    transition: none !important;
+  }
 }
