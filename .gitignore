@@ -42,6 +42,6 @@ testem.log
 Thumbs.db
 
 # Environment files - CONTAINS SECRET KEYS
-/src/environments/environmens.ts
-/src/environments/environments.prod.ts
+/src/environments/environment.ts
+/src/environments/environment.prod.ts
 /src/environments/*.local.ts
