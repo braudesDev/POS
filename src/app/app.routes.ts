@@ -1,8 +1,20 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth.guard'; // importamos el guard de autenticación
 
 export const routes: Routes = [
+  // Ruta pública: Login (sin guard)
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then(
+        (m) => m.LoginComponent,
+      ),
+  },
+
+  // Rutas protegidas (requieren autenticación)
   {
     path: 'productos',
+    canActivate: [authGuard], // ← PROTEGIDO
     children: [
       {
         path: '',
@@ -27,16 +39,21 @@ export const routes: Routes = [
       },
     ],
   },
-  // Ruta para el POS
+
+  // POS protegido
   {
     path: 'pos',
+    canActivate: [authGuard], // ← PROTEGIDO
     loadComponent: () =>
       import('./features/sales/pages/pos/pos.component').then(
         (m) => m.PosComponent,
       ),
   },
+
+  // Reportes protegidos
   {
     path: 'reportes',
+    canActivate: [authGuard], // ← PROTEGIDO
     children: [
       {
         path: '',
@@ -44,10 +61,6 @@ export const routes: Routes = [
           import('./features/reports/pages/dashboard/dashboard.component').then(
             (m) => m.DashboardComponent,
           ),
-      },
-      {
-        path: 'dashboard',
-        redirectTo: '',
       },
       {
         path: 'historial',
@@ -58,10 +71,17 @@ export const routes: Routes = [
       },
     ],
   },
-  // Secambia la direccion al POS
+
+  // Redirección por defecto: a login
   {
     path: '',
-    redirectTo: '/pos',
+    redirectTo: '/login',
     pathMatch: 'full',
+  },
+
+  // Ruta comodín (opcional) - para 404
+  {
+    path: '**',
+    redirectTo: '/login',
   },
 ];

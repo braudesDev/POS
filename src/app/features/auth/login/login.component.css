@@ -1,0 +1,87 @@
+.login-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mat-sys-surface-container-low);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 450px;
+  margin: 1rem;
+}
+
+/* CORRECCIÓN: Centrar el header correctamente */
+mat-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem 1rem 0.5rem 1rem; /* Ajuste de padding */
+  margin-bottom: 0;
+}
+
+mat-card-title {
+  font-size: 1.8rem !important;
+  margin-bottom: 0.25rem;
+  width: 100%; /* Asegura que ocupe todo el ancho */
+}
+
+mat-card-subtitle {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 1rem 1.5rem 1rem; /* Ajuste de padding */
+}
+
+.full-width {
+  width: 100%;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+  border-radius: var(--mat-sys-corner-small);
+  margin: 0.5rem 0;
+}
+
+.forgot-link {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+mat-tab-group {
+  margin-top: 0.5rem;
+}
+
+/* Ajuste para que las pestañas no tengan padding extra */
+::ng-deep .mat-mdc-tab-body-wrapper {
+  padding: 0 !important;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    margin: 0.5rem;
+  }
+
+  mat-card-title {
+    font-size: 1.5rem !important;
+  }
+
+  mat-card-subtitle {
+    font-size: 0.85rem;
+  }
+}
