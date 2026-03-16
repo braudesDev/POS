@@ -93,6 +93,11 @@ export class ScannerComponent implements AfterViewInit {
         console.log('Enter detectado, procesando:', this.codigoBuffer);
         this.procesarCodigo(this.codigoBuffer);
         this.codigoBuffer = '';
+        //Importante: no dejar que el timeout tambien procese
+        if (this.timeoutId) {
+          clearTimeout(this.timeoutId);
+          this.timeoutId = null;
+        }
       }
       return;
     }
