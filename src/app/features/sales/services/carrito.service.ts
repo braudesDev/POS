@@ -27,38 +27,80 @@ export class CarritoService {
       (item) => item.producto.id === producto.id,
     );
 
-    if (existe) {
-      existe.cantidad += cantidad;
-      existe.subtotal = existe.producto.precio * existe.cantidad;
+    // Calcular nueva cantidad total si existe
+    const nuevaCantidad = existe ? existe.cantidad + cantidad : cantidad;
+
+    console.log('➕ Intentando agregar:', {
+      producto: producto.nombre,
+      stock: producto.stock,
+      cantidadSolicitada: nuevaCantidad,
+    });
+
+    if (nuevaCantidad <= producto.stock) {
+      if (existe) {
+        existe.cantidad += cantidad;
+        existe.subtotal = existe.producto.precio * existe.cantidad;
+        console.log('✅ Cantidad actualizada a:', existe.cantidad);
+      } else {
+        const nuevoItem: ItemCarrito = {
+          producto,
+          cantidad,
+          subtotal: producto.precio * cantidad,
+        };
+        carritoActual.push(nuevoItem);
+        console.log('✅ Nuevo producto agregado');
+      }
       this.carritoSubject.next([...carritoActual]);
     } else {
-      const nuevoItem: ItemCarrito = {
-        producto,
-        cantidad,
-        subtotal: producto.precio * cantidad,
-      };
-      this.carritoSubject.next([...carritoActual, nuevoItem]);
+      console.log('❌ Stock insuficiente, no se agrega');
+      // Aquí deberías emitir un error o mostrar mensaje
     }
   }
 
   /**
    * Agregar producto por código de barras
    */
-  agregarPorCodigo(codigo: string): Observable<boolean> {
+  agregarPorCodigo(
+    codigo: string,
+  ): Observable<{ success: boolean; message: string; tipo?: string }> {
     return new Observable((observer) => {
       this.productsService.getProductoByCodigo(codigo).subscribe({
         next: (producto) => {
           if (producto) {
-            this.agregarProducto(producto);
-            observer.next(true);
+            const carritoActual = this.carritoSubject.value;
+            const itemEnCarrito = carritoActual.find(
+              (item) => item.producto.id === producto.id,
+            );
+            const cantidadEnCarrito = itemEnCarrito?.cantidad || 0;
+
+            console.log('🔍 Producto encontrado:', producto.nombre);
+            console.log('📦 Stock disponible:', producto.stock);
+            console.log('🛒 En carrito:', cantidadEnCarrito);
+
+            if (cantidadEnCarrito < producto.stock) {
+              this.agregarProducto(producto);
+              observer.next({
+                success: true,
+                message: `✅ ${producto.nombre} agregado (${cantidadEnCarrito + 1}/${producto.stock})`,
+                tipo: 'exito',
+              });
+            } else {
+              observer.next({
+                success: false,
+                message: `❌ ${producto.nombre}: solo hay ${producto.stock} disponible(s). Ya tienes ${cantidadEnCarrito} en el carrito. No tienes suficiente stock para agregar más.`,
+                tipo: 'stock_insuficiente',
+              });
+            }
           } else {
-            observer.next(false);
+            observer.next({
+              success: false,
+              message: `❌ Código ${codigo} no encontrado en el catálogo`,
+              tipo: 'no_encontrado',
+            });
           }
           observer.complete();
         },
-        error: (err) => {
-          observer.error(err);
-        },
+        error: (err) => observer.error(err),
       });
     });
   }

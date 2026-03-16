@@ -274,6 +274,27 @@ mat-chip[selected="true"] {
   }
 }
 
+/* Para mensajes de stock insuficiente */
+.mensaje.stock-insuficiente {
+  background: #fff3cd;
+  color: #856404;
+  border-left: 4px solid #ffc107;
+}
+
+/* Para mensajes de producto no encontrado */
+.mensaje.no-encontrado {
+  background: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #dc3545;
+}
+
+/* Para mensajes de éxito */
+.mensaje.exito {
+  background: #d4edda;
+  color: #155724;
+  border-left: 4px solid #28a745;
+}
+
 /* Móviles muy pequeños (menos de 360px) */
 @media (max-width: 360px) {
   .scanner-card {

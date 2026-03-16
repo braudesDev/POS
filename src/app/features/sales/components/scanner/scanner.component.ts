@@ -141,18 +141,23 @@ export class ScannerComponent implements AfterViewInit {
   }
 
   private procesarCodigo(codigo: string) {
-    console.log('Procesando código:', codigo);
+    console.log('🔍 Procesando código:', codigo);
     this.mensaje = 'Buscando producto...';
     this.mensajeError = false;
 
     this.carritoService.agregarPorCodigo(codigo).subscribe({
-      next: (encontrado) => {
-        if (encontrado) {
-          this.mensaje = 'Producto agregado al carrito';
+      next: (resultado) => {
+        this.mensaje = resultado.message;
+        this.mensajeError = !resultado.success;
+
+        // Opcional: comportamiento específico por tipo de error
+        if (resultado.tipo === 'stock_insuficiente') {
+          console.warn('⚠️ Alerta de stock:', resultado.message);
+          // Aquí podrías hacer un sonido o vibrar
+        }
+
+        if (resultado.success) {
           this.productoAgregado.emit();
-        } else {
-          this.mensaje = '❌ Producto no encontrado';
-          this.mensajeError = true;
         }
       },
       error: (err) => {
