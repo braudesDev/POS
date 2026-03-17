@@ -86,7 +86,10 @@ export class CartComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        // El usuario confirmó, vaciar el carrito
         this.carritoService.limpiarCarrito();
+
+        // Mostrar mensaje de éxito
         this.snackBar.open('🛒 Carrito vaciado', 'Cerrar', { duration: 2000 });
       }
     });

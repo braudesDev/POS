@@ -2,6 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Producto } from '../../products/models/producto.model';
 import { ProductsService } from '../../products/services/products.service';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface ItemCarrito {
   producto: Producto;
@@ -14,14 +16,43 @@ export interface ItemCarrito {
 })
 export class CarritoService {
   private productsService = inject(ProductsService);
+  private readonly STORAGE_KEY = 'carrito_pdv';
 
   private carritoSubject = new BehaviorSubject<ItemCarrito[]>([]);
   carrito$ = this.carritoSubject.asObservable();
+
+  constructor() {
+    // Cargar carrito guardado al iniciar el servicio
+    this.cargarCarritoGuardado();
+  }
+
+  private cargarCarritoGuardado() {
+    const guardado = localStorage.getItem(this.STORAGE_KEY);
+    if (guardado) {
+      try {
+        const carrito = JSON.parse(guardado);
+        this.carritoSubject.next(carrito);
+        console.log('🔄 Carrito recuperado de localStorage:', carrito);
+      } catch (e) {
+        console.error('Error cargando carrito guardado:', e);
+      }
+    }
+  }
+
+  private guardarCarrito(carrito: ItemCarrito[]) {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(carrito));
+  }
 
   /**
    * Agregar producto al carrito
    */
   agregarProducto(producto: Producto, cantidad: number = 1) {
+    // Validar stock desde cero
+    if (producto.stock <= 0) {
+      console.log('❌ producto agotado, no se puede agregar');
+      return;
+    }
+
     const carritoActual = this.carritoSubject.value;
     const existe = carritoActual.find(
       (item) => item.producto.id === producto.id,
@@ -51,9 +82,10 @@ export class CarritoService {
         console.log('✅ Nuevo producto agregado');
       }
       this.carritoSubject.next([...carritoActual]);
+      // Guadar desoues de cada cambio
+      this.guardarCarrito(carritoActual);
     } else {
       console.log('❌ Stock insuficiente, no se agrega');
-      // Aquí deberías emitir un error o mostrar mensaje
     }
   }
 
@@ -147,6 +179,7 @@ export class CarritoService {
    */
   limpiarCarrito() {
     this.carritoSubject.next([]);
+    localStorage.removeItem(this.STORAGE_KEY);
   }
 
   /**

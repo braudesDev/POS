@@ -23,38 +23,43 @@
       <mat-list>
         <mat-list-item *ngFor="let item of carrito" class="cart-item">
           <div class="item-content">
+            <!-- 🔴 PARTE MODIFICADA: nombre + stock + precio en la MISMA línea -->
             <div class="item-info">
-              <span class="item-name">{{ item.producto.nombre }}</span>
+              <div class="nombre-stock">
+                <span class="item-name">{{ item.producto.nombre }}</span>
+
+                <!-- Indicador de stock (AHORA AQUÍ, junto al nombre) -->
+                <div
+                  class="stock-info"
+                  *ngIf="stockDisponible[item.producto.id!] !== undefined"
+                >
+                  <mat-icon
+                    [color]="getStockColor(item)"
+                    [matTooltip]="
+                      'Stock disponible: ' + stockDisponible[item.producto.id!]
+                    "
+                  >
+                    {{
+                      item.cantidad >= stockDisponible[item.producto.id!]
+                        ? "warning"
+                        : "inventory"
+                    }}
+                  </mat-icon>
+                  <span
+                    class="stock-text"
+                    [class.stock-bajo]="
+                      item.cantidad >= stockDisponible[item.producto.id!]
+                    "
+                  >
+                    {{ stockDisponible[item.producto.id!] }} disp.
+                  </span>
+                </div>
+              </div>
+
               <span class="item-price">${{ item.producto.precio }}</span>
             </div>
 
-            <!-- Indicador de stock -->
-            <div
-              class="stock-info"
-              *ngIf="stockDisponible[item.producto.id!] !== undefined"
-            >
-              <mat-icon
-                [color]="getStockColor(item)"
-                matTooltip="Stock disponible: {{
-                  stockDisponible[item.producto.id!]
-                }}"
-              >
-                {{
-                  item.cantidad >= stockDisponible[item.producto.id!]
-                    ? "warning"
-                    : "inventory"
-                }}
-              </mat-icon>
-              <span
-                class="stock-text"
-                [class.stock-bajo]="
-                  item.cantidad >= stockDisponible[item.producto.id!]
-                "
-              >
-                {{ stockDisponible[item.producto.id!] }} disp.
-              </span>
-            </div>
-
+            <!-- EL RESTO IGUAL -->
             <div class="item-actions">
               <button
                 mat-icon-button
@@ -102,15 +107,12 @@
         </mat-list-item>
       </mat-list>
 
-      <!-- Footer -->
+      <!-- Footer (igual) -->
       <div *ngIf="carrito.length > 0" class="cart-footer">
-        <mat-divider></mat-divider>
-
         <div class="cart-total">
           <span>Total:</span>
           <span class="total-amount">${{ carritoService.getTotal() }}</span>
         </div>
-
         <button
           mat-stroked-button
           color="warn"
