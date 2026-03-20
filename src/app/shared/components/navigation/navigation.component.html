@@ -30,6 +30,17 @@
         <span matListItemTitle>Punto de Venta</span>
       </mat-list-item>
 
+      <!-- NUEVO: Acceso directo a consultar producto -->
+
+      <mat-list-item
+        (click)="sidenav.close()"
+        routerLink="/consultar"
+        routerLinkActive="active"
+      >
+        <mat-icon matListItemIcon>search</mat-icon>
+        <span matListItemTitle>Consultar Producto</span>
+      </mat-list-item>
+
       <mat-list-item
         (click)="sidenav.close()"
         routerLink="/productos"

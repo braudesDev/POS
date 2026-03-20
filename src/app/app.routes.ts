@@ -72,6 +72,14 @@ export const routes: Routes = [
     ],
   },
 
+  {
+    path: 'consultar',
+    loadComponent: () =>
+      import('./features/products/pages/product-viewer/product-viewer.component').then(
+        (m) => m.ProductViewerComponent,
+      ),
+  },
+
   // Redirección por defecto: a login
   {
     path: '',
