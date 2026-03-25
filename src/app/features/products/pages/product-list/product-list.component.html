@@ -7,6 +7,29 @@
     </button>
   </div>
 
+  <!-- 🔍 NUEVA BARRA DE BÚSQUEDA -->
+  <div class="search-bar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Buscar producto</mat-label>
+      <input
+        matInput
+        [(ngModel)]="terminoBusqueda"
+        (ngModelChange)="filtrarProductos()"
+        placeholder="Nombre o código de barras..."
+      />
+      <mat-icon matSuffix>search</mat-icon>
+      <button
+        *ngIf="terminoBusqueda"
+        matSuffix
+        mat-icon-button
+        (click)="limpiarBusqueda()"
+        type="button"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
   <!-- Loading State -->
   <div *ngIf="loading" class="loading-spinner">
     <mat-spinner diameter="40"></mat-spinner>
@@ -24,7 +47,7 @@
 
   <!-- Products Table -->
   <div *ngIf="!loading && !error" class="table-container">
-    <table mat-table [dataSource]="productos" class="mat-elevation-z8">
+    <table mat-table [dataSource]="productosFiltrados" class="mat-elevation-z8">
       <!-- Imagen Column -->
       <ng-container matColumnDef="imagen">
         <th mat-header-cell *matHeaderCellDef>Imagen</th>

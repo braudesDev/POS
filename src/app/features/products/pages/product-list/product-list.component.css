@@ -40,6 +40,17 @@ h1 {
   color: var(--mat-sys-on-surface);
 }
 
+.search-bar {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.search-field {
+  width: 100%;
+  max-width: 500px;
+}
+
 .table-container {
   position: relative;
   min-height: 200px;

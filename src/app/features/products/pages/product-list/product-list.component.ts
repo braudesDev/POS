@@ -11,11 +11,18 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, MaterialModule, MatProgressSpinner],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MaterialModule,
+    MatProgressSpinner,
+    FormsModule,
+  ],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css'],
 })
@@ -28,6 +35,9 @@ export class ProductListComponent implements OnInit {
   productos: Producto[] = [];
   loading = true;
   error: string | null = null;
+
+  terminoBusqueda: string = '';
+  productosFiltrados: Producto[] = [];
 
   // Define las columnas que se mostrarán
   displayedColumns: string[] = [
@@ -51,6 +61,7 @@ export class ProductListComponent implements OnInit {
     this.productsService.getProductos().subscribe({
       next: (productos) => {
         this.productos = productos;
+        this.productosFiltrados = [...productos]; // Inicializamos
         this.loading = false;
         this.cdr.detectChanges();
         console.log('Productos cargados:', this.productos);
@@ -63,6 +74,26 @@ export class ProductListComponent implements OnInit {
         this.cdr.detectChanges();
       },
     });
+  }
+
+  filtrarProductos() {
+    if (!this.terminoBusqueda.trim()) {
+      // Si el término está vacío, mostrar todos
+      this.productosFiltrados = [...this.productos];
+      return;
+    }
+
+    const termino = this.terminoBusqueda.toLowerCase().trim();
+    this.productosFiltrados = this.productos.filter(
+      (producto) =>
+        producto.nombre.toLowerCase().includes(termino) ||
+        producto.codigoBarras.toLowerCase().includes(termino),
+    );
+  }
+
+  limpiarBusqueda() {
+    this.terminoBusqueda = '';
+    this.productosFiltrados = [...this.productos];
   }
 
   eliminarProducto(producto: Producto) {
