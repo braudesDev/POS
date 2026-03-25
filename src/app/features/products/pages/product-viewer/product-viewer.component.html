@@ -11,22 +11,31 @@
   </mat-toolbar>
 
   <div class="content">
-    <!-- Buscador -->
     <mat-card class="search-card">
       <mat-card-content>
         <div class="search-section">
           <mat-form-field appearance="outline" class="search-field">
-            <mat-label>Código de barras</mat-label>
+            <mat-label>Buscar producto</mat-label>
             <input
-              #codigoInput
+              #searchInput
               matInput
               [(ngModel)]="codigoBusqueda"
+              (ngModelChange)="buscarPorNombre()"
               (keyup.enter)="buscarManual()"
-              (keydown)="onKeyDown($event)"
-              placeholder="Escanea o escribe el código"
+              (keydown)="onScannerInput($event)"
+              placeholder="Escribe el nombre o escanea un código..."
               autofocus
             />
-            <mat-icon matSuffix>qr_code_scanner</mat-icon>
+            <mat-icon matSuffix>search</mat-icon>
+            <button
+              *ngIf="codigoBusqueda"
+              matSuffix
+              mat-icon-button
+              (click)="limpiar()"
+              type="button"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
           </mat-form-field>
 
           <button
@@ -39,9 +48,41 @@
           </button>
         </div>
 
-        <div class="search-hint" *ngIf="!producto && !error && !loading">
+        <!-- Sugerencias -->
+        <div *ngIf="productosSugeridos.length > 0" class="suggestions">
+          <mat-card
+            class="suggestion-card"
+            *ngFor="let prod of productosSugeridos"
+            (click)="seleccionarProducto(prod)"
+          >
+            <div class="suggestion-item">
+              <img
+                *ngIf="prod.imagenUrl"
+                [src]="prod.imagenUrl"
+                class="suggestion-image"
+              />
+              <div *ngIf="!prod.imagenUrl" class="suggestion-no-image">
+                <mat-icon>image_not_supported</mat-icon>
+              </div>
+              <div class="suggestion-info">
+                <strong>{{ prod.nombre }}</strong>
+                <span class="suggestion-price">${{ prod.precio }}</span>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+
+        <!-- Mensaje de ayuda -->
+        <div
+          class="search-hint"
+          *ngIf="
+            !producto && !error && !loading && productosSugeridos.length === 0
+          "
+        >
           <mat-icon>info</mat-icon>
-          <span>Escanea un código o escríbelo manualmente</span>
+          <span
+            >Escribe el nombre del producto o escanea el código de barras</span
+          >
         </div>
 
         <!-- Loading -->
@@ -61,18 +102,17 @@
       </mat-card-content>
     </mat-card>
 
-    <!-- Resultado (solo si hay producto) -->
+    <!-- Resultado -->
     <mat-card *ngIf="producto" class="product-card">
       <mat-card-header>
         <mat-card-title>{{ producto.nombre }}</mat-card-title>
-        <mat-card-subtitle
-          >Código: {{ producto.codigoBarras }}</mat-card-subtitle
-        >
+        <mat-card-subtitle>
+          Código: {{ producto.codigoBarras }}
+        </mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
         <div class="product-grid">
-          <!-- Imagen -->
           <div class="product-image">
             <img
               *ngIf="producto.imagenUrl"
@@ -84,7 +124,6 @@
             </div>
           </div>
 
-          <!-- Info -->
           <div class="product-info">
             <div class="info-item">
               <span class="info-label">Precio</span>
