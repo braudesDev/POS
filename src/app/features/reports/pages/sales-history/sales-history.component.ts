@@ -18,40 +18,76 @@ export class SalesHistoryComponent implements OnInit {
   ventas: (Venta & { mostrarDetalle?: boolean })[] = [];
   cargando = true;
   error: string | null = null;
-
-  fechaInicio: string = this.getFechaInicioMes();
-  fechaFin: string = this.getFechaHoy();
   totalPeriodo = 0;
+
+  // Para el datepicker (objetos Date)
+  fechaInicioObj: Date = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    1,
+  );
+  fechaFinObj: Date = new Date();
+
+  // Strings para mantener compatibilidad (opcional)
+  fechaInicio: string = '';
+  fechaFin: string = '';
+
+  displayedColumns: string[] = [
+    'fecha',
+    'hora',
+    'productos',
+    'total',
+    'metodo',
+    'acciones',
+  ];
 
   ngOnInit() {
     this.cargarVentas();
   }
 
-  getFechaHoy(): string {
-    const hoy = new Date();
-    return hoy.toISOString().split('T')[0];
-  }
-
-  getFechaInicioMes(): string {
-    const hoy = new Date();
-    const primero = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-    return primero.toISOString().split('T')[0];
+  // Método auxiliar para formatear fecha a YYYY-MM-DD
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   cargarVentas() {
-    if (!this.fechaInicio || !this.fechaFin) return;
+    if (!this.fechaInicioObj || !this.fechaFinObj) return;
 
     this.cargando = true;
     this.error = null;
 
-    const inicio = new Date(this.fechaInicio);
-    inicio.setHours(0, 0, 0, 0);
+    // Crear fechas UTC para evitar problemas de zona horaria
+    const inicio = new Date(
+      Date.UTC(
+        this.fechaInicioObj.getFullYear(),
+        this.fechaInicioObj.getMonth(),
+        this.fechaInicioObj.getDate(),
+        0,
+        0,
+        0,
+      ),
+    );
 
-    const fin = new Date(this.fechaFin);
-    fin.setHours(23, 59, 59, 999);
+    const fin = new Date(
+      Date.UTC(
+        this.fechaFinObj.getFullYear(),
+        this.fechaFinObj.getMonth(),
+        this.fechaFinObj.getDate(),
+        23,
+        59,
+        59,
+        999,
+      ),
+    );
+
+    console.log('📅 Buscando ventas entre:', inicio, 'y', fin);
 
     this.reportsService.getVentasPorRango(inicio, fin).subscribe({
       next: (ventas) => {
+        console.log('📊 Ventas encontradas:', ventas.length);
         this.ventas = ventas.map((v) => ({ ...v, mostrarDetalle: false }));
         this.totalPeriodo = ventas.reduce((sum, v) => sum + v.total, 0);
         this.cargando = false;
@@ -65,8 +101,10 @@ export class SalesHistoryComponent implements OnInit {
   }
 
   resetFiltros() {
-    this.fechaInicio = this.getFechaInicioMes();
-    this.fechaFin = this.getFechaHoy();
+    // Resetear al primer día del mes actual
+    const hoy = new Date();
+    this.fechaInicioObj = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+    this.fechaFinObj = new Date();
     this.cargarVentas();
   }
 
@@ -75,17 +113,7 @@ export class SalesHistoryComponent implements OnInit {
   }
 
   imprimirTicket(venta: Venta) {
-    // Por ahora solo un mensaje, luego implementaremos la impresión
-    console.log('Imprimir ticket:', venta);
-    alert('Funcionalidad de impresión próximamente');
+    console.log('🖨️ Reimprimir ticket:', venta);
+    alert('📄 Funcionalidad de reimpresión en desarrollo');
   }
-
-  displayedColumns: string[] = [
-    'fecha',
-    'hora',
-    'productos',
-    'total',
-    'metodo',
-    'acciones',
-  ];
 }

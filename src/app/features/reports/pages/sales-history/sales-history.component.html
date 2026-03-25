@@ -3,7 +3,10 @@
   <mat-toolbar color="primary" class="history-toolbar">
     <span>Historial de Ventas</span>
     <span class="toolbar-spacer"></span>
-    <button mat-button routerLink="/reportes"></button>
+    <button mat-button routerLink="/reportes">
+      <mat-icon>dashboard</mat-icon>
+      Dashboard
+    </button>
   </mat-toolbar>
 
   <div class="content-container">
@@ -15,24 +18,30 @@
             <mat-label>Fecha inicio</mat-label>
             <input
               matInput
-              type="date"
-              [(ngModel)]="fechaInicio"
-              (change)="cargarVentas()"
-              class="filter-input"
+              [matDatepicker]="pickerInicio"
+              [(ngModel)]="fechaInicioObj"
+              (dateChange)="cargarVentas()"
             />
-            <mat-icon matSuffix>calendar_today</mat-icon>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="pickerInicio"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #pickerInicio></mat-datepicker>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Fecha fin</mat-label>
             <input
               matInput
-              type="date"
-              [(ngModel)]="fechaFin"
-              (change)="cargarVentas()"
-              class="filter-input"
+              [matDatepicker]="pickerFin"
+              [(ngModel)]="fechaFinObj"
+              (dateChange)="cargarVentas()"
             />
-            <mat-icon matSuffix>calendar_today</mat-icon>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="pickerFin"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #pickerFin></mat-datepicker>
           </mat-form-field>
 
           <button mat-raised-button color="warn" (click)="resetFiltros()">
