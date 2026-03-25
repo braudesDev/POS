@@ -33,6 +33,7 @@ export class ScannerComponent implements AfterViewInit {
   private codigoBuffer = '';
   private timeoutId: any;
   private readonly TIMEOUT_MS = 150; // 150ms de inactividad
+  private isProcessing = false; // Para evitar procesar múltiples códigos al mismo tiempo
 
   ngAfterViewInit(): void {
     //Itentar enfocar inmediatamente, pero también establecer un timeout por si el enfoque falla inicialmente
@@ -70,17 +71,15 @@ export class ScannerComponent implements AfterViewInit {
 
   onKeyDown(event: KeyboardEvent) {
     // Ignorar teclas de control
-    if (
-      event.key === 'Shift' ||
-      event.key === 'Control' ||
-      event.key === 'Alt' ||
-      event.key === 'Meta'
-    ) {
+    if (['Shift', 'Control', 'Alt', 'Meta'].includes(event.key)) {
       return;
     }
 
-    // Prevenir comportamiento por defecto (evitar que escriba en otros lados)
-    event.preventDefault();
+    // NO hacer event.preventDefault() para no bloquear la escritura normal
+    // Pero si es Enter, prevenir para que no envíe el formulario
+    if (event.key === 'Enter') {
+      event.preventDefault();
+    }
 
     // Limpiar timeout anterior
     if (this.timeoutId) {
@@ -89,58 +88,54 @@ export class ScannerComponent implements AfterViewInit {
 
     // Si es Enter, procesar inmediatamente
     if (event.key === 'Enter') {
-      if (this.codigoBuffer.length > 0) {
+      if (this.codigoBuffer.length > 0 && !this.isProcessing) {
         console.log('Enter detectado, procesando:', this.codigoBuffer);
         this.procesarCodigo(this.codigoBuffer);
         this.codigoBuffer = '';
-        //Importante: no dejar que el timeout tambien procese
-        if (this.timeoutId) {
-          clearTimeout(this.timeoutId);
-          this.timeoutId = null;
-        }
       }
       return;
     }
 
     // Si es un carácter imprimible, acumular
-    if (event.key.length === 1) {
-      // Solo permitir dígitos (opcional, depende de tu caso)
-      if (/[0-9]/.test(event.key)) {
-        this.codigoBuffer += event.key;
-        console.log('Buffer actualizado:', this.codigoBuffer);
+    if (event.key.length === 1 && /[0-9]/.test(event.key)) {
+      this.codigoBuffer += event.key;
+      console.log('Buffer actualizado:', this.codigoBuffer);
 
-        // Establecer timeout para procesar después de inactividad
-        this.timeoutId = setTimeout(() => {
-          if (this.codigoBuffer.length > 0) {
-            console.log(
-              'Timeout por inactividad, procesando:',
-              this.codigoBuffer,
-            );
-            this.procesarCodigo(this.codigoBuffer);
-            this.codigoBuffer = '';
-          }
-        }, this.TIMEOUT_MS);
-      }
+      // Establecer timeout para procesar después de inactividad
+      this.timeoutId = setTimeout(() => {
+        if (this.codigoBuffer.length > 0 && !this.isProcessing) {
+          console.log(
+            'Timeout por inactividad, procesando:',
+            this.codigoBuffer,
+          );
+          this.procesarCodigo(this.codigoBuffer);
+          this.codigoBuffer = '';
+        }
+      }, this.TIMEOUT_MS);
     }
   }
 
-  // Agrega este método a la clase ScannerComponent
   cambiarModo(modo: boolean) {
     this.modoManual = modo;
     if (!modo) {
-      // Si cambia a modo automático, enfocar el escáner
       setTimeout(() => this.enfocarScanner(), 100);
     }
   }
 
   buscarCodigo() {
-    if (this.codigoManual) {
+    if (this.codigoManual && !this.isProcessing) {
       this.procesarCodigo(this.codigoManual);
       this.codigoManual = '';
     }
   }
 
   private procesarCodigo(codigo: string) {
+    if (this.isProcessing) {
+      console.log('⚠️ Ya se está procesando un código, ignorando:', codigo);
+      return;
+    }
+
+    this.isProcessing = true;
     console.log('🔍 Procesando código:', codigo);
     this.mensaje = 'Buscando producto...';
     this.mensajeError = false;
@@ -150,20 +145,21 @@ export class ScannerComponent implements AfterViewInit {
         this.mensaje = resultado.message;
         this.mensajeError = !resultado.success;
 
-        // Opcional: comportamiento específico por tipo de error
         if (resultado.tipo === 'stock_insuficiente') {
           console.warn('⚠️ Alerta de stock:', resultado.message);
-          // Aquí podrías hacer un sonido o vibrar
         }
 
         if (resultado.success) {
           this.productoAgregado.emit();
         }
+
+        this.isProcessing = false;
       },
       error: (err) => {
         this.mensaje = '❌ Error al buscar producto';
         this.mensajeError = true;
         console.error('Error:', err);
+        this.isProcessing = false;
       },
     });
   }
