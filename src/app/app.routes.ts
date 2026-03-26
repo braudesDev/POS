@@ -71,7 +71,22 @@ export const routes: Routes = [
       },
     ],
   },
-
+  {
+    path: 'generar-codigo',
+    canActivate: [authGuard], // ← PROTEGIDO
+    loadComponent: () =>
+      import('./features/barcode/barcode-generator/barcode-generator').then(
+        (m) => m.BarcodeGenerator,
+      ),
+  },
+  {
+    path: 'etiquetas',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/barcode/barcode-list/barcode-list').then(
+        (m) => m.BarcodeList,
+      ),
+  },
   {
     path: 'consultar',
     loadComponent: () =>

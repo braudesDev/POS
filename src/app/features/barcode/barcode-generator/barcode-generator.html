@@ -1,0 +1,99 @@
+<div class="generator-container">
+  <mat-toolbar color="primary" class="generator-toolbar">
+    <span>Generador de Códigos de Barras</span>
+    <span class="toolbar-spacer"></span>
+    <button
+      mat-icon-button
+      routerLink="/etiquetas"
+      matTooltip="Ver etiquetas generadas"
+    >
+      <mat-icon>list</mat-icon>
+    </button>
+    <button mat-icon-button routerLink="/pos" matTooltip="Ir al POS">
+      <mat-icon>point_of_sale</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <div class="content">
+    <mat-card class="generator-card">
+      <mat-card-header>
+        <mat-card-title>Generar código de barras</mat-card-title>
+        <mat-card-subtitle>
+          Para productos que no tienen código de fábrica
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="form-section">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Número o texto para el código</mat-label>
+            <input
+              matInput
+              [(ngModel)]="codigoTexto"
+              placeholder="Ej: PELUCHE001 o 123456789"
+              (keyup.enter)="generarCodigo()"
+            />
+            <mat-icon matSuffix>qr_code</mat-icon>
+            <mat-hint>Usa letras, números o combinación</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nombre del producto (opcional)</mat-label>
+            <input
+              matInput
+              [(ngModel)]="nombreProducto"
+              placeholder="Ej: Peluche Oso Café"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="button-section">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="generarCodigo()"
+            [disabled]="!codigoTexto"
+          >
+            <mat-icon>generate</mat-icon>
+            Generar código
+          </button>
+          <button
+            mat-stroked-button
+            (click)="limpiar()"
+            [disabled]="!codigoTexto && !nombreProducto"
+          >
+            Limpiar
+          </button>
+        </div>
+
+        <div *ngIf="barcodeUrl" class="barcode-preview">
+          <mat-divider></mat-divider>
+          <h3>Código generado:</h3>
+          <div class="barcode-image">
+            <img [src]="barcodeUrl" alt="Código de barras" />
+          </div>
+          <p class="barcode-value">{{ codigoTexto }}</p>
+          <p *ngIf="nombreProducto" class="product-name">
+            {{ nombreProducto }}
+          </p>
+
+          <div class="download-section">
+            <button mat-raised-button color="accent" (click)="descargarPNG()">
+              <mat-icon>download</mat-icon>
+              Descargar PNG
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="agregarAlProducto()"
+              [disabled]="!nombreProducto"
+            >
+              <mat-icon>add</mat-icon>
+              Asignar a producto
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

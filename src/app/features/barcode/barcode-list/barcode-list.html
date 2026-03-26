@@ -1,0 +1,71 @@
+<div class="list-container">
+  <mat-toolbar color="primary" class="list-toolbar">
+    <span>Etiquetas Generadas</span>
+    <span class="toolbar-spacer"></span>
+    <button
+      mat-icon-button
+      routerLink="/generar-codigo"
+      matTooltip="Generar nuevo código"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+    <button mat-icon-button routerLink="/pos" matTooltip="Ir al POS">
+      <mat-icon>point_of_sale</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <div class="content">
+    <mat-card *ngIf="etiquetas.length === 0" class="empty-card">
+      <mat-card-content>
+        <div class="empty-state">
+          <mat-icon>qr_code_scanner</mat-icon>
+          <p>No hay etiquetas generadas</p>
+          <button
+            mat-raised-button
+            color="primary"
+            routerLink="/generar-codigo"
+          >
+            Generar primera etiqueta
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="etiquetas-grid" *ngIf="etiquetas.length > 0">
+      <mat-card *ngFor="let item of etiquetas" class="etiqueta-card">
+        <mat-card-content>
+          <div class="etiqueta-imagen">
+            <img [src]="item.barcodeData" [alt]="item.texto" />
+          </div>
+          <div class="etiqueta-info">
+            <div class="etiqueta-texto">{{ item.texto }}</div>
+            <div *ngIf="item.nombreProducto" class="etiqueta-producto">
+              {{ item.nombreProducto }}
+            </div>
+            <div class="etiqueta-fecha">
+              {{ item.fecha | date: "dd/MM/yyyy HH:mm" }}
+            </div>
+          </div>
+          <div class="etiqueta-acciones">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="reimprimir(item)"
+              matTooltip="Descargar"
+            >
+              <mat-icon>download</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="eliminar(item.id)"
+              matTooltip="Eliminar"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

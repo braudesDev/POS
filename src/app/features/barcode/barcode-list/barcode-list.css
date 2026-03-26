@@ -1,0 +1,92 @@
+.list-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--mat-sys-surface-container-low);
+}
+
+.list-toolbar {
+  flex-shrink: 0;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.empty-card {
+  max-width: 400px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.empty-state mat-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  color: var(--mat-sys-primary);
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+.etiquetas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.etiqueta-card mat-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.etiqueta-imagen {
+  background: white;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.etiqueta-imagen img {
+  max-width: 100%;
+  height: auto;
+}
+
+.etiqueta-texto {
+  font-family: monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--mat-sys-primary);
+  margin-bottom: 0.25rem;
+}
+
+.etiqueta-producto {
+  font-size: 0.9rem;
+  color: var(--mat-sys-on-surface);
+}
+
+.etiqueta-fecha {
+  font-size: 0.7rem;
+  color: var(--mat-sys-outline);
+  margin-top: 0.5rem;
+}
+
+.etiqueta-acciones {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+  .etiquetas-grid {
+    grid-template-columns: 1fr;
+  }
+}

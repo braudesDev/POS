@@ -78,6 +78,15 @@
         <span matListItemTitle>Historial</span>
       </mat-list-item>
 
+      <mat-list-item
+        (click)="sidenav.close()"
+        routerLink="/generar-codigo"
+        routerLinkActive="active"
+      >
+        <mat-icon matListItemIcon>qr_code_scanner</mat-icon>
+        <span matListItemTitle>Generar Código</span>
+      </mat-list-item>
+
       <mat-divider></mat-divider>
 
       <mat-list-item (click)="cerrarSesion()">
