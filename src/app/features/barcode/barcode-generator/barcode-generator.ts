@@ -5,12 +5,13 @@ import { RouterModule } from '@angular/router';
 import { MaterialModule } from '../../../shared/material/material.module';
 import { ProductsService } from '../../products/services/products.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CloudinaryService } from '../../../core/cloudinary/cloudinary.service'; // ← IMPORTAR
 
 interface CodigoGenerado {
   id: string;
   texto: string;
   nombreProducto?: string;
-  barcodeData: string;
+  barcodeUrl: string; // ← Cambiado: ahora es URL de Cloudinary
   fecha: Date;
 }
 
@@ -23,14 +24,15 @@ interface CodigoGenerado {
 })
 export class BarcodeGenerator {
   private productsService = inject(ProductsService);
+  private cloudinaryService = inject(CloudinaryService); // ← NUEVO
   private snackBar = inject(MatSnackBar);
 
   codigoTexto: string = '';
   nombreProducto: string = '';
   barcodeUrl: string | null = null;
   private barcodeData: string | null = null;
+  public subiendo = false; // ← NUEVO
 
-  // Cargar historial al iniciar
   constructor() {
     this.cargarHistorial();
   }
@@ -38,20 +40,42 @@ export class BarcodeGenerator {
   private cargarHistorial() {
     const guardado = localStorage.getItem('codigos_barras');
     if (guardado) {
-      // Solo cargamos para mantener, no lo mostramos aquí
       JSON.parse(guardado);
     }
   }
 
-  private guardarHistorial(nuevoCodigo: CodigoGenerado) {
+  private async guardarEnCloudinary(blob: Blob): Promise<string> {
+    const file = new File([blob], `codigo-${this.codigoTexto}.png`, {
+      type: 'image/png',
+    });
+
+    return new Promise((resolve, reject) => {
+      this.cloudinaryService.subirImagen(file, 'etiqueta').subscribe({
+        next: (url) => resolve(url),
+        error: (err) => reject(err),
+      });
+    });
+  }
+
+  private guardarHistorial(urlCloudinary: string) {
+    const nuevoCodigo: CodigoGenerado = {
+      id: Date.now().toString(),
+      texto: this.codigoTexto,
+      nombreProducto: this.nombreProducto || undefined,
+      barcodeUrl: urlCloudinary,
+      fecha: new Date(),
+    };
+
     const guardado = localStorage.getItem('codigos_barras');
     let historial: CodigoGenerado[] = guardado ? JSON.parse(guardado) : [];
-    historial.unshift(nuevoCodigo); // Agregar al inicio
+    historial.unshift(nuevoCodigo);
     localStorage.setItem('codigos_barras', JSON.stringify(historial));
   }
 
   async generarCodigo() {
     if (!this.codigoTexto) return;
+
+    this.subiendo = true;
 
     try {
       const JsBarcode = (await import('jsbarcode')).default;
@@ -65,20 +89,21 @@ export class BarcodeGenerator {
         displayValue: true,
       });
 
-      this.barcodeUrl = canvas.toDataURL('image/png');
+      // Convertir canvas a Blob
+      const blob = await new Promise<Blob>((resolve) => {
+        canvas.toBlob((blob) => resolve(blob!), 'image/png');
+      });
+
+      // Subir a Cloudinary
+      const cloudinaryUrl = await this.guardarEnCloudinary(blob);
+
+      this.barcodeUrl = cloudinaryUrl;
       this.barcodeData = this.codigoTexto;
 
-      // GUARDAR EN HISTORIAL
-      const nuevoCodigo: CodigoGenerado = {
-        id: Date.now().toString(),
-        texto: this.codigoTexto,
-        nombreProducto: this.nombreProducto || undefined,
-        barcodeData: this.barcodeUrl,
-        fecha: new Date(),
-      };
-      this.guardarHistorial(nuevoCodigo);
+      // Guardar en historial (con URL de Cloudinary)
+      this.guardarHistorial(cloudinaryUrl);
 
-      this.snackBar.open('✅ Código generado exitosamente', 'Cerrar', {
+      this.snackBar.open('✅ Código generado y guardado en la nube', 'Cerrar', {
         duration: 3000,
       });
     } catch (error) {
@@ -86,6 +111,8 @@ export class BarcodeGenerator {
       this.snackBar.open('❌ Error al generar el código', 'Cerrar', {
         duration: 3000,
       });
+    } finally {
+      this.subiendo = false;
     }
   }
 

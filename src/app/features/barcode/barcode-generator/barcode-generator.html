@@ -48,15 +48,23 @@
         </div>
 
         <div class="button-section">
+          <!-- 🔴 UN SOLO BOTÓN DE GENERAR (con spinner) -->
           <button
             mat-raised-button
             color="primary"
             (click)="generarCodigo()"
-            [disabled]="!codigoTexto"
+            [disabled]="!codigoTexto || subiendo"
           >
-            <mat-icon>generate</mat-icon>
-            Generar código
+            <mat-icon *ngIf="!subiendo">generate</mat-icon>
+            <mat-spinner
+              *ngIf="subiendo"
+              diameter="20"
+              class="btn-spinner"
+            ></mat-spinner>
+            {{ subiendo ? "Subiendo..." : "Generar código" }}
           </button>
+
+          <!-- Botón Limpiar -->
           <button
             mat-stroked-button
             (click)="limpiar()"
