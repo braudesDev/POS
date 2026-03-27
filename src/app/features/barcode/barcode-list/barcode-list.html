@@ -35,7 +35,7 @@
       <mat-card *ngFor="let item of etiquetas" class="etiqueta-card">
         <mat-card-content>
           <div class="etiqueta-imagen">
-            <img [src]="item.barcodeData" [alt]="item.texto" />
+            <img [src]="item.barcodeUrl" [alt]="item.texto" />
           </div>
           <div class="etiqueta-info">
             <div class="etiqueta-texto">{{ item.texto }}</div>

@@ -8,7 +8,7 @@ interface CodigoGenerado {
   id: string;
   texto: string;
   nombreProducto?: string;
-  barcodeData: string;
+  barcodeUrl: string;
   fecha: Date;
 }
 
@@ -38,7 +38,7 @@ export class BarcodeList {
   reimprimir(etiqueta: CodigoGenerado) {
     const link = document.createElement('a');
     link.download = `codigo-${etiqueta.texto}.png`;
-    link.href = etiqueta.barcodeData;
+    link.href = etiqueta.barcodeUrl;
     link.click();
 
     this.snackBar.open('📥 Código descargado', 'Cerrar', { duration: 2000 });

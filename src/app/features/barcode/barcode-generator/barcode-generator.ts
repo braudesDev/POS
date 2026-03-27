@@ -50,7 +50,7 @@ export class BarcodeGenerator {
     });
 
     return new Promise((resolve, reject) => {
-      this.cloudinaryService.subirImagen(file, 'etiqueta').subscribe({
+      this.cloudinaryService.subirImagen(file, 'pdv/etiquetas').subscribe({
         next: (url) => resolve(url),
         error: (err) => reject(err),
       });

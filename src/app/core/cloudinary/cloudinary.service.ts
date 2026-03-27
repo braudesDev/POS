@@ -11,31 +11,22 @@ export class CloudinaryService {
   private http = inject(HttpClient);
 
   private cloudName = environment.cloudinary.cloudName;
-  private uploadPresetProductos = environment.cloudinary.uploadPreset;
-  private uploadPresetEtiquetas = environment.cloudinary.uploadPresetEtiquetas;
+  private uploadPreset = environment.cloudinary.uploadPreset; // ← UN SOLO PRESET
   private uploadUrl = `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`;
 
   /**
    * Subir una imagen a Cloudinary
    * @param file Archivo a subir
-   * @param tipo 'producto' o 'etiqueta'
+   * @param carpeta Carpeta destino (ej: 'pdv/productos', 'pdv/etiquetas')
    */
   subirImagen(
     file: File,
-    tipo: 'producto' | 'etiqueta' = 'producto',
+    carpeta: string = 'pdv/productos',
   ): Observable<string> {
     const formData = new FormData();
     formData.append('file', file);
-
-    const uploadPreset =
-      tipo === 'producto'
-        ? this.uploadPresetProductos
-        : this.uploadPresetEtiquetas;
-    formData.append('upload_preset', uploadPreset);
-
-    // 🔴 NUEVO: Enviar la carpeta manualmente
-    const folder = tipo === 'producto' ? 'pdv/productos' : 'pdv/etiquetas';
-    formData.append('folder', folder);
+    formData.append('upload_preset', this.uploadPreset);
+    formData.append('folder', carpeta); // ← Esto ahora sí funcionará
 
     return this.http
       .post<any>(this.uploadUrl, formData)
