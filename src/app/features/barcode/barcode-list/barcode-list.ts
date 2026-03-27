@@ -35,13 +35,46 @@ export class BarcodeList {
     }
   }
 
-  reimprimir(etiqueta: CodigoGenerado) {
-    const link = document.createElement('a');
-    link.download = `codigo-${etiqueta.texto}.png`;
-    link.href = etiqueta.barcodeUrl;
-    link.click();
+  // ✅ DESCARGAR (icono de descarga)
+  async descargar(etiqueta: CodigoGenerado) {
+    try {
+      const response = await fetch(etiqueta.barcodeUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `codigo-${etiqueta.texto}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      this.snackBar.open('📥 Código descargado', 'Cerrar', { duration: 2000 });
+    } catch (error) {
+      console.error('Error al descargar:', error);
+      this.snackBar.open('❌ Error al descargar', 'Cerrar', { duration: 3000 });
+    }
+  }
 
-    this.snackBar.open('📥 Código descargado', 'Cerrar', { duration: 2000 });
+  // También actualiza reimprimir si quieres el mismo comportamiento
+  async reimprimir(etiqueta: CodigoGenerado) {
+    try {
+      const response = await fetch(etiqueta.barcodeUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `codigo-${etiqueta.texto}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      this.snackBar.open('🖨️ Código listo para imprimir', 'Cerrar', {
+        duration: 2000,
+      });
+    } catch (error) {
+      console.error('Error al descargar:', error);
+      this.snackBar.open('❌ Error al descargar', 'Cerrar', { duration: 3000 });
+    }
   }
 
   eliminar(id: string) {

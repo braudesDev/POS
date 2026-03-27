@@ -47,13 +47,23 @@
             </div>
           </div>
           <div class="etiqueta-acciones">
+            <!-- Botón descargar -->
             <button
               mat-icon-button
               color="primary"
-              (click)="reimprimir(item)"
+              (click)="descargar(item)"
               matTooltip="Descargar"
             >
               <mat-icon>download</mat-icon>
+            </button>
+            <!-- Botón reimprimir (también descarga, pero con otro icono) -->
+            <button
+              mat-icon-button
+              color="accent"
+              (click)="reimprimir(item)"
+              matTooltip="Reimprimir"
+            >
+              <mat-icon>print</mat-icon>
             </button>
             <button
               mat-icon-button
