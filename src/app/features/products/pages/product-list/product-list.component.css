@@ -1,11 +1,22 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+app-root,
+mat-sidenav-container,
+mat-sidenav-content {
+  height: 100%;
+}
+
 .container {
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* ← Cambiado de auto a hidden para evitar doble scroll */
 }
 
 /* El scroll solo en el contenido que debe scroll */
@@ -13,7 +24,6 @@
   flex: 1;
   overflow-y: auto;
   min-height: 0;
-  scrollbar-gutter: stable;
 }
 
 /* Personalizar scrollbar solo en el área scrollable */
@@ -62,10 +72,15 @@ h1 {
 
 .table-container {
   position: relative;
-  min-height: 200px;
   background: var(--mat-sys-surface);
   border-radius: var(--mat-sys-corner-medium);
   overflow-x: auto;
+
+  /* 👇 IMPORTANTE */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 table {
@@ -172,7 +187,7 @@ table {
 }
 
 mat-paginator {
-  overflow: visible !important;
+  flex-shrink: 0;
 }
 
 /* Ocultar scrollbar nativa del navegador */
