@@ -5,14 +5,13 @@
   background: var(--mat-sys-surface);
   border-radius: var(--mat-sys-corner-large);
   box-shadow: var(--mat-sys-level2);
-  /* SIN altura fija ni max-height */
-  height: 100%; /* Asegura que ocupe todo el espacio disponible */
+  height: 100%;
 }
 
 mat-card-header {
   flex-shrink: 0;
   padding: 1rem;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
 }
 
 mat-card-title {
@@ -20,16 +19,16 @@ mat-card-title {
   align-items: center;
   gap: 0.5rem;
   font-size: 1.2rem;
-  color: white;
+  color: var(--mat-sys-on-surface);
 }
 
 mat-card-title mat-icon {
-  color: white;
+  color: var(--mat-sys-on-surface);
 }
 
 .badge {
-  background: #d6107d;
-  color: white;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -39,13 +38,11 @@ mat-card-title mat-icon {
 
 mat-card-content {
   flex: 1 1 auto;
-  overflow-y: auto; /* ← CAMBIADO a auto para permitir scroll cuando sea necesario */
+  overflow-y: auto;
   padding: 0 1rem;
   max-height: none;
-
-  /* Scrollbar personalizada */
   scrollbar-width: thin;
-  scrollbar-color: #af4c82 #f5f5f5;
+  scrollbar-color: var(--mat-sys-primary) var(--mat-sys-surface-container-low);
 }
 
 mat-card-content::-webkit-scrollbar {
@@ -53,17 +50,17 @@ mat-card-content::-webkit-scrollbar {
 }
 
 mat-card-content::-webkit-scrollbar-track {
-  background: #f5f5f5;
+  background: var(--mat-sys-surface-container-low);
   border-radius: 3px;
 }
 
 mat-card-content::-webkit-scrollbar-thumb {
-  background: #af4c82;
+  background: var(--mat-sys-primary);
   border-radius: 3px;
 }
 
 mat-card-content::-webkit-scrollbar-thumb:hover {
-  background: #af4c82;
+  background: var(--mat-sys-primary-container);
 }
 
 /* Espacio al final del scroll */
@@ -86,7 +83,7 @@ mat-card-content::after {
   flex-direction: column;
   width: 100%;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
 }
 
 .item-info {
@@ -99,7 +96,7 @@ mat-card-content::after {
 .item-name {
   font-weight: 500;
   font-size: 0.9rem;
-  color: #ff9bd2;
+  color: var(--mat-sys-on-surface);
   white-space: normal;
   word-break: break-word;
   line-height: 1.4;
@@ -109,7 +106,7 @@ mat-card-content::after {
 
 .item-price {
   font-size: 0.8rem;
-  color: #ff9bd2;
+  color: var(--mat-sys-on-surface-variant);
   white-space: nowrap;
 }
 
@@ -118,13 +115,6 @@ mat-card-content::after {
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
-}
-
-.item-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
 }
 
 /* Indicador de stock */
@@ -139,26 +129,16 @@ mat-card-content::after {
   font-size: 1rem;
   width: 1rem;
   height: 1rem;
-  /* SIN color fijo, usa el que da getStockColor() */
 }
 
 .stock-text {
   font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
   white-space: nowrap;
 }
 
 .stock-text.stock-bajo {
-  color: #f44336; /* Rojo para texto cuando está bajo */
-  font-weight: 500;
-}
-
-.stock-text {
-  font-size: 0.8rem;
-  color: white;
-}
-
-.stock-text.stock-bajo {
-  color: #f44336;
+  color: var(--mat-sys-error);
   font-weight: 500;
 }
 
@@ -172,19 +152,19 @@ mat-card-content::after {
 .btn-qty {
   width: 28px;
   height: 28px;
-  border: 1px solid #ddd;
-  background: #f8f8f8;
+  border: 1px solid var(--mat-sys-outline);
+  background: var(--mat-sys-surface-container-low);
   border-radius: 6px;
   cursor: pointer;
   font-size: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--mat-sys-on-surface);
 }
 
 .btn-qty:hover:not(:disabled) {
-  background: #e8e8e8;
+  background: var(--mat-sys-surface-container);
 }
 
 .btn-qty:disabled {
@@ -196,14 +176,14 @@ mat-card-content::after {
   min-width: 30px;
   text-align: center;
   font-weight: 500;
-  color: white;
+  color: var(--mat-sys-on-surface);
 }
 
 .item-subtotal {
   min-width: 80px;
   text-align: right;
   font-weight: 600;
-  color: #d6107d;
+  color: var(--mat-sys-primary);
   margin-left: auto;
   margin-right: 0.5rem;
 }
@@ -215,13 +195,14 @@ mat-card-content::after {
   cursor: pointer;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  color: #f44336;
+  color: var(--mat-sys-error);
   opacity: 0.6;
 }
 
 .btn-remove:hover {
   opacity: 1;
-  background: #ffebee;
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
 }
 
 /* Footer */
@@ -229,7 +210,7 @@ mat-card-content::after {
   flex-shrink: 0;
   padding: 1rem;
   background: var(--mat-sys-surface);
-  border-top: 2px solid var(--mat-sys-outline-variant);
+  border-top: 1px solid var(--mat-sys-outline-variant);
   margin-top: auto;
 }
 
@@ -238,42 +219,45 @@ mat-card-content::after {
   justify-content: space-between;
   align-items: center;
   font-size: 1.2rem;
-  color: white;
+  color: var(--mat-sys-on-surface);
   margin-bottom: 1rem;
 }
 
 .total-amount {
   font-size: 1.4rem;
   font-weight: 600;
-  color: #d6107d;
+  color: var(--mat-sys-primary);
 }
 
 .btn-clear {
   width: 100%;
   padding: 0.75rem;
-  background: #f8f8f8;
+  background: var(--mat-sys-surface-container-low);
+  border: 1px solid var(--mat-sys-outline);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
+  color: var(--mat-sys-on-surface);
 }
 
 .btn-clear:hover {
-  background: #f0f0f0;
+  background: var(--mat-sys-surface-container);
 }
 
 .empty-cart {
   text-align: center;
   padding: 2rem 1rem;
+  color: var(--mat-sys-outline);
 }
 
 .empty-icon {
   font-size: 3rem;
   width: 3rem;
   height: 3rem;
-  color: #af4c82;
+  color: var(--mat-sys-primary);
+  opacity: 0.5;
   margin-bottom: 1rem;
 }
-
 /* ========== MEDIA QUERIES ========== */
 
 /* Móviles pequeños (hasta 480px) */

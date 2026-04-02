@@ -42,7 +42,7 @@ export class ProductFormComponent implements OnInit {
 
   constructor() {
     this.productoForm = this.fb.group({
-      codigoBarras: ['', [Validators.required, Validators.minLength(3)]],
+      codigoBarras: ['', [Validators.minLength(3)]],
       nombre: ['', Validators.required],
       descripcion: [''],
       precio: [0, [Validators.required, Validators.min(0.01)]],

@@ -6,6 +6,7 @@ import { MaterialModule } from '../../../shared/material/material.module';
 import { ProductsService } from '../../products/services/products.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CloudinaryService } from '../../../core/cloudinary/cloudinary.service'; // ← IMPORTAR
+import { BarcodeService } from '../barcode.service';
 
 interface CodigoGenerado {
   id: string;
@@ -26,6 +27,7 @@ export class BarcodeGenerator {
   private productsService = inject(ProductsService);
   private cloudinaryService = inject(CloudinaryService); // ← NUEVO
   private snackBar = inject(MatSnackBar);
+  private barcodeService = inject(BarcodeService);
 
   codigoTexto: string = '';
   nombreProducto: string = '';
@@ -100,8 +102,15 @@ export class BarcodeGenerator {
       this.barcodeUrl = cloudinaryUrl;
       this.barcodeData = this.codigoTexto;
 
-      // Guardar en historial (con URL de Cloudinary)
-      this.guardarHistorial(cloudinaryUrl);
+      // ✅ GUARDAR EN FIRESTORE (no en localStorage)
+      const etiqueta = {
+        texto: this.codigoTexto,
+        nombreProducto: this.nombreProducto || undefined,
+        barcodeUrl: cloudinaryUrl,
+        fecha: new Date(),
+      };
+
+      await this.barcodeService.guardarEtiqueta(etiqueta);
 
       this.snackBar.open('✅ Código generado y guardado en la nube', 'Cerrar', {
         duration: 3000,

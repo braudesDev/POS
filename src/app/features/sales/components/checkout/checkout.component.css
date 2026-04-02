@@ -1,77 +1,62 @@
 .checkout-container {
-  margin: 1rem;
+  margin: 0.5rem;
   display: flex;
   flex-direction: column;
-  height: 100%; /* Ocupa todo el espacio disponible */
+  height: 100%;
+  min-height: 0;
+}
+
+/* Forzar que el mat-card no tenga padding ni overflow propio */
+::ng-deep .checkout-container .mat-mdc-card {
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+::ng-deep .checkout-container .mat-mdc-card-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 0.5rem 0.5rem 0.5rem;
+  min-height: 0;
 }
 
 mat-card-header {
-  margin-bottom: 1rem;
   flex-shrink: 0;
+  padding: 0.5rem 0.5rem 0 0.5rem;
+  margin-bottom: 0;
 }
 
 mat-card-title {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font: var(--mat-sys-title-medium);
+  font-size: 1.1rem;
   color: var(--mat-sys-on-surface);
-}
-
-mat-card-content {
-  flex: 1;
-  overflow-y: auto; /* Scroll cuando sea necesario */
-  padding-right: 8px; /* Espacio para scrollbar */
-
-  /* Scrollbar personalizada */
-  scrollbar-width: thin;
-  scrollbar-color: var(--mat-sys-primary) var(--mat-sys-surface-container-low);
-}
-
-mat-card-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-mat-card-content::-webkit-scrollbar-track {
-  background: var(--mat-sys-surface-container-low);
-  border-radius: 3px;
-}
-
-mat-card-content::-webkit-scrollbar-thumb {
-  background: var(--mat-sys-primary);
-  border-radius: 3px;
-}
-
-mat-card-content::-webkit-scrollbar-thumb:hover {
-  background: var(--mat-sys-primary-container);
-}
-
-/* Espacio al final del scroll */
-mat-card-content::after {
-  content: "";
-  display: block;
-  height: 12px;
-  width: 100%;
-  flex-shrink: 0;
+  margin: 0;
 }
 
 .cart-summary {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
   background: var(--mat-sys-surface-container-low);
+  border-radius: var(--mat-sys-corner-medium);
+  padding: 0.5rem;
   flex-shrink: 0;
 }
 
 .summary-items {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .summary-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
+  font-size: 0.85rem;
   color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
 }
 
 .summary-amount {
@@ -83,42 +68,40 @@ mat-card-content::after {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 1rem;
-  padding-top: 0.5rem;
-  font: var(--mat-sys-title-large);
-}
-
-.total-label {
-  color: var(--mat-sys-on-surface);
+  margin-top: 0.5rem;
+  padding-top: 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-top: 1px solid var(--mat-sys-outline-variant);
 }
 
 .total-amount {
-  font-weight: 600;
   color: var(--mat-sys-primary);
 }
 
 .checkout-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.75rem;
   flex-shrink: 0;
 }
 
 .form-section {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
 .section-label {
-  font: var(--mat-sys-label-large);
+  font-size: 0.8rem;
+  font-weight: 500;
   color: var(--mat-sys-on-surface-variant);
-  margin-bottom: 0.25rem;
 }
 
 .payment-toggle {
   display: flex;
   width: 100%;
+  gap: 0.5rem;
 }
 
 .payment-toggle .mat-button-toggle {
@@ -126,7 +109,15 @@ mat-card-content::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.8rem;
+}
+
+.payment-toggle .mat-button-toggle .mat-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 .full-width {
@@ -137,23 +128,31 @@ mat-card-content::after {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem;
+  padding: 0.5rem;
   background: var(--mat-sys-primary-container);
   color: var(--mat-sys-on-primary-container);
   border-radius: var(--mat-sys-corner-small);
-  font: var(--mat-sys-body-large);
+  font-size: 0.85rem;
   font-weight: 500;
 }
 
 .cambio-info mat-icon {
-  color: var(--mat-sys-primary);
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 .form-actions {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
   flex-shrink: 0;
+}
+
+.btn-cancelar,
+.btn-procesar {
+  padding: 0.5rem;
+  font-size: 0.85rem;
 }
 
 .btn-cancelar {
@@ -162,50 +161,37 @@ mat-card-content::after {
 
 .btn-procesar {
   flex: 2;
-  position: relative;
-}
-
-.btn-spinner {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .empty-checkout {
   text-align: center;
-  padding: 3rem 1rem;
+  padding: 1.5rem;
   color: var(--mat-sys-outline);
 }
 
 .empty-icon {
-  font-size: 4rem;
-  width: 4rem;
-  height: 4rem;
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
   color: var(--mat-sys-primary);
   opacity: 0.5;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .empty-checkout p {
-  font: var(--mat-sys-body-large);
-  margin: 0.5rem 0 0.25rem;
-}
-
-.empty-checkout small {
-  font: var(--mat-sys-body-small);
-  color: var(--mat-sys-outline);
+  font-size: 0.9rem;
+  margin: 0.25rem 0;
 }
 
 .mensaje {
-  margin-top: 1.5rem;
-  padding: 1rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
   border-radius: var(--mat-sys-corner-small);
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font: var(--mat-sys-body-large);
-  animation: slideIn 0.3s ease;
+  font-size: 0.8rem;
+  animation: slideIn 0.2s ease;
   flex-shrink: 0;
 }
 
@@ -222,7 +208,7 @@ mat-card-content::after {
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-5px);
   }
   to {
     opacity: 1;
@@ -230,37 +216,37 @@ mat-card-content::after {
   }
 }
 
+/* Scrollbar personalizada */
+mat-card-content::-webkit-scrollbar,
+::ng-deep .checkout-container .mat-mdc-card-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+mat-card-content::-webkit-scrollbar-track,
+::ng-deep .checkout-container .mat-mdc-card-content::-webkit-scrollbar-track {
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 3px;
+}
+
+mat-card-content::-webkit-scrollbar-thumb,
+::ng-deep .checkout-container .mat-mdc-card-content::-webkit-scrollbar-thumb {
+  background: var(--mat-sys-primary);
+  border-radius: 3px;
+}
+
+/* ========== MEDIA QUERIES ========== */
+/* (mantén todos tus media queries igual) */
+
 /* ========== MEDIA QUERIES ========== */
 
 /* Móviles pequeños (hasta 480px) */
 @media (max-width: 480px) {
   .checkout-container {
-    margin: 0.5rem;
+    margin: 0.25rem;
   }
 
   mat-card-header {
-    margin-bottom: 0.75rem;
-  }
-
-  mat-card-title {
-    font-size: 1.1rem;
-  }
-
-  .cart-summary {
-    margin-bottom: 1rem;
-  }
-
-  .summary-row {
-    padding: 0.35rem 0;
-    font-size: 0.9rem;
-  }
-
-  .summary-total {
-    font-size: 1rem;
-  }
-
-  .total-amount {
-    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
   }
 
   .payment-toggle {
@@ -269,51 +255,19 @@ mat-card-content::after {
 
   .payment-toggle .mat-button-toggle {
     width: 100%;
-    margin-bottom: 0.25rem;
-    padding: 0.5rem;
-  }
-
-  .payment-toggle .mat-button-toggle .mat-icon {
-    font-size: 1.2rem;
-    width: 1.2rem;
-    height: 1.2rem;
-  }
-
-  .cambio-info {
-    padding: 0.6rem;
-    font-size: 0.9rem;
   }
 
   .form-actions {
     flex-direction: column;
-    gap: 0.75rem;
-    margin-top: 0.75rem;
   }
 
   .btn-cancelar,
   .btn-procesar {
     width: 100%;
-    min-height: 44px; /* Mejor para touch */
   }
 
-  .empty-checkout {
-    padding: 2rem 1rem;
-  }
-
-  .empty-icon {
-    font-size: 3rem;
-    width: 3rem;
-    height: 3rem;
-  }
-
-  .empty-checkout p {
-    font-size: 1rem;
-  }
-
-  .mensaje {
-    margin-top: 1rem;
-    padding: 0.75rem;
-    font-size: 0.9rem;
+  .summary-row {
+    font-size: 0.8rem;
   }
 }
 
@@ -521,10 +475,6 @@ mat-card-content::after {
     padding: 1rem;
   }
 
-  .btn-spinner {
-    left: 1.5rem;
-  }
-
   .empty-icon {
     font-size: 5rem;
     width: 5rem;
@@ -562,5 +512,45 @@ mat-card-content::after {
   .btn-procesar,
   .btn-cancelar {
     transition: none !important;
+  }
+}
+
+/* Tablets grandes en horizontal (iPad 13" landscape) */
+@media (min-width: 1025px) and (max-width: 1366px) and (orientation: landscape) {
+  .pos-grid {
+    grid-template-columns: 1fr 450px; /* Checkout más ancho */
+    gap: 1.5rem;
+  }
+
+  .left-panel {
+    max-height: calc(100vh - 100px);
+  }
+
+  .right-panel {
+    max-height: calc(100vh - 100px);
+  }
+}
+
+/* iPad Pro 12.9" en horizontal */
+@media (min-width: 1366px) and (max-width: 1500px) and (orientation: landscape) {
+  .pos-grid {
+    grid-template-columns: 1fr 480px;
+    gap: 1.5rem;
+  }
+}
+
+/* Tablets en horizontal (tamaño estándar) */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  .pos-grid {
+    grid-template-columns: 1fr 380px;
+    gap: 1rem;
+  }
+
+  .right-panel {
+    max-height: calc(100vh - 120px);
+  }
+
+  .left-panel {
+    max-height: calc(100vh - 120px);
   }
 }

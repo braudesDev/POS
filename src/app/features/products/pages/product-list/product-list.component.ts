@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ProductsService } from '../../services/products.service';
 import { Producto } from '../../models/producto.model';
 import { MaterialModule } from '../../../../shared/material/material.module';
@@ -11,7 +12,9 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { FormsModule } from '@angular/forms';
+import { CloudinaryService } from '../../../../core/cloudinary/cloudinary.service';
+import { BarcodeService } from '../../../barcode/barcode.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-product-list',
@@ -20,6 +23,7 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     RouterModule,
     MaterialModule,
+    MatTooltipModule,
     MatProgressSpinner,
     FormsModule,
   ],
@@ -28,6 +32,8 @@ import { FormsModule } from '@angular/forms';
 })
 export class ProductListComponent implements OnInit {
   private productsService = inject(ProductsService);
+  private cloudinaryService = inject(CloudinaryService);
+  private barcodeService = inject(BarcodeService);
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
@@ -39,7 +45,6 @@ export class ProductListComponent implements OnInit {
   terminoBusqueda: string = '';
   productosFiltrados: Producto[] = [];
 
-  // Define las columnas que se mostrarán
   displayedColumns: string[] = [
     'imagen',
     'codigo',
@@ -61,7 +66,7 @@ export class ProductListComponent implements OnInit {
     this.productsService.getProductos().subscribe({
       next: (productos) => {
         this.productos = productos;
-        this.productosFiltrados = [...productos]; // Inicializamos
+        this.productosFiltrados = [...productos];
         this.loading = false;
         this.cdr.detectChanges();
         console.log('Productos cargados:', this.productos);
@@ -78,7 +83,6 @@ export class ProductListComponent implements OnInit {
 
   filtrarProductos() {
     if (!this.terminoBusqueda.trim()) {
-      // Si el término está vacío, mostrar todos
       this.productosFiltrados = [...this.productos];
       return;
     }
@@ -139,6 +143,68 @@ export class ProductListComponent implements OnInit {
           },
         });
       }
+    });
+  }
+
+  async generarEtiqueta(producto: Producto) {
+    // 1. Generar código numérico con timestamp
+    const codigo = Date.now().toString().slice(-12);
+    console.log('📦 Código generado:', codigo);
+
+    // 2. Importar JsBarcode
+    const JsBarcode = (await import('jsbarcode')).default;
+    const canvas = document.createElement('canvas');
+
+    JsBarcode(canvas, codigo, {
+      format: 'CODE128',
+      width: 2,
+      height: 100,
+      margin: 10,
+      displayValue: true,
+    });
+
+    // 3. Convertir canvas a Blob
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error('No se pudo generar la imagen'));
+        }
+      }, 'image/png');
+    });
+
+    // 4. Subir a Cloudinary
+    const file = new File([blob], `etiqueta-${codigo}.png`, {
+      type: 'image/png',
+    });
+    const url = await this.cloudinaryService
+      .subirImagen(file, 'pdv/etiquetas')
+      .toPromise();
+
+    // 5. Guardar en Firestore (colección etiquetas)
+    await this.barcodeService.guardarEtiqueta({
+      texto: codigo,
+      nombreProducto: producto.nombre,
+      barcodeUrl: url!,
+      fecha: new Date(),
+    });
+
+    // 6. Actualizar el producto con el código
+    await this.productsService
+      .actualizarProducto(producto.id!, {
+        codigoBarras: codigo,
+      })
+      .toPromise();
+
+    // 7. Descargar la imagen
+    const link = document.createElement('a');
+    link.download = `etiqueta-${codigo}.png`;
+    link.href = url!;
+    link.click();
+
+    this.snackBar.open(`✅ Etiqueta generada con código ${codigo}`, 'Cerrar', {
+      duration: 5000,
     });
   }
 }

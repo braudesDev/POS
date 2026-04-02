@@ -11,13 +11,11 @@ export class CloudinaryService {
   private http = inject(HttpClient);
 
   private cloudName = environment.cloudinary.cloudName;
-  private uploadPreset = environment.cloudinary.uploadPreset; // ← UN SOLO PRESET
+  private uploadPreset = environment.cloudinary.uploadPreset;
   private uploadUrl = `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`;
 
   /**
    * Subir una imagen a Cloudinary
-   * @param file Archivo a subir
-   * @param carpeta Carpeta destino (ej: 'pdv/productos', 'pdv/etiquetas')
    */
   subirImagen(
     file: File,
@@ -26,7 +24,7 @@ export class CloudinaryService {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', this.uploadPreset);
-    formData.append('folder', carpeta); // ← Esto ahora sí funcionará
+    formData.append('folder', carpeta);
 
     return this.http
       .post<any>(this.uploadUrl, formData)

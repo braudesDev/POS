@@ -1,16 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MaterialModule } from '../../../shared/material/material.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-interface CodigoGenerado {
-  id: string;
-  texto: string;
-  nombreProducto?: string;
-  barcodeUrl: string;
-  fecha: Date;
-}
+import { BarcodeService, CodigoGenerado } from '../barcode.service';
 
 @Component({
   selector: 'app-barcode-list',
@@ -19,23 +12,20 @@ interface CodigoGenerado {
   templateUrl: './barcode-list.html',
   styleUrls: ['./barcode-list.css'],
 })
-export class BarcodeList {
+export class BarcodeList implements OnInit {
   private snackBar = inject(MatSnackBar);
+  private barcodeService = inject(BarcodeService);
 
   etiquetas: CodigoGenerado[] = [];
 
-  constructor() {
-    this.cargarEtiquetas();
+  ngOnInit() {
+    // Cargar desde Firestore
+    this.barcodeService.getEtiquetas().subscribe((etiquetas) => {
+      this.etiquetas = etiquetas;
+    });
   }
 
-  private cargarEtiquetas() {
-    const guardado = localStorage.getItem('codigos_barras');
-    if (guardado) {
-      this.etiquetas = JSON.parse(guardado);
-    }
-  }
-
-  // ✅ DESCARGAR (icono de descarga)
+  // ✅ DESCARGAR
   async descargar(etiqueta: CodigoGenerado) {
     try {
       const response = await fetch(etiqueta.barcodeUrl);
@@ -55,7 +45,7 @@ export class BarcodeList {
     }
   }
 
-  // También actualiza reimprimir si quieres el mismo comportamiento
+  // ✅ REIMPRIMIR
   async reimprimir(etiqueta: CodigoGenerado) {
     try {
       const response = await fetch(etiqueta.barcodeUrl);
@@ -77,9 +67,16 @@ export class BarcodeList {
     }
   }
 
-  eliminar(id: string) {
-    this.etiquetas = this.etiquetas.filter((e) => e.id !== id);
-    localStorage.setItem('codigos_barras', JSON.stringify(this.etiquetas));
-    this.snackBar.open('🗑️ Etiqueta eliminada', 'Cerrar', { duration: 2000 });
+  // ✅ ELIMINAR (solo de Firestore, sin Cloudinary ni localStorage)
+  async eliminar(etiqueta: CodigoGenerado) {
+    if (!etiqueta.id) return;
+
+    try {
+      await this.barcodeService.eliminarEtiqueta(etiqueta.id);
+      this.snackBar.open('🗑️ Etiqueta eliminada', 'Cerrar', { duration: 3000 });
+    } catch (error) {
+      console.error('Error al eliminar:', error);
+      this.snackBar.open('❌ Error al eliminar', 'Cerrar', { duration: 3000 });
+    }
   }
 }

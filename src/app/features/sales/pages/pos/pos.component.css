@@ -33,7 +33,7 @@
 .pos-grid {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 350px;
+  grid-template-columns: 1fr 420px;
   gap: 1rem;
   padding: 1rem;
   min-height: 0;
@@ -46,6 +46,7 @@
   gap: 1rem;
   min-height: 0;
   overflow-y: auto;
+  height: 100%;
 
   /* MEJORAS PARA LA BARRA DE SCROLL */
   scrollbar-gutter: stable;
